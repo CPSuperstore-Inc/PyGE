@@ -3,3 +3,6 @@ class RoomNotDeclaredException(Exception):
 
 class InvalidXMLException(Exception):
     pass
+
+class ObjectNotDeclaredException(Exception):
+    pass

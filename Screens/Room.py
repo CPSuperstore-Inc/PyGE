@@ -8,6 +8,7 @@ from SideScroller.utils import get_mandatory, point_in_rect
 from SideScroller.Objects.ObjectBase import ObjectBase
 from SideScroller.utils import rect_a_touch_b
 from SideScroller.Globals.GlobalVariable import get_sys_var
+from SideScroller.Errors import ObjectNotDeclaredException
 
 HALL = 0
 
@@ -24,18 +25,28 @@ class Room(ScreenBase):
             if type(data[item]) is list:
                 for count in range(len(data[item])):
                     if not item.startswith("@"):
+                        found = False
                         for c in self.custom_objects:
                             if c.__name__ == item:
                                 self.props.append(c(self.screen, data[item][count], self))
+                                found = True
                                 break
+                        if found is False:
+                            raise ObjectNotDeclaredException("The Object '{0}' Is Referenced In The XML, But Is Not Declared. Please Place A Reference To The '{0}' Class In The 'custom_objects' List When Calling The 'side_scroller' Function.".format(item))
             else:
                 if not item.startswith("@"):
+                    found = False
                     for c in self.custom_objects:
                         if c.__name__ == item:
                             if data[item] is None:
                                 data[item] = {}
                             self.props.append(c(self.screen, data[item], self))
+                            found = True
                             break
+                    if found is False:
+                        raise ObjectNotDeclaredException(
+                            "The Object '{0}' Is Referenced In The XML, But Is Not Declared. Please Place A Reference To The '{0}' Class In The 'custom_objects' List When Calling The 'side_scroller' Function.".format(
+                                item))
 
 
     def enter_room(self):

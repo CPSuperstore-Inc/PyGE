@@ -7,3 +7,9 @@ class DisplayBase:
 
     def get_size(self):
         return self.w, self.h
+
+    def get_width(self):
+        return self.w
+
+    def get_height(self):
+        return self.h

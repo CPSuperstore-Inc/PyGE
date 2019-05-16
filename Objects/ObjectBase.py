@@ -1,6 +1,8 @@
 import typing
 
 import pygame
+import matplotlib.path as mplPath
+import numpy as np
 
 from SideScroller.Misc.Ticker import Ticker
 from SideScroller.utils import get_mandatory, rect_a_touch_b, scale_coords, get_optional
@@ -57,6 +59,14 @@ class ObjectBase:
     def rect(self):
         return self.x, self.y, self.w, self.h
 
+    @property
+    def point_array(self):
+        return (self.x, self.y), (self.x, self.y + self.h), (self.x + self.w, self.y + self.h), (self.x + self.w, self.y)
+
+    @property
+    def polygon(self):
+        return mplPath.Path(np.array(self.point_array))
+
     def system_onroomenter(self):
         """DONT OVERRRIDE ME!!!!!!!!!!!"""
         self.ticker = Ticker()
@@ -90,6 +100,15 @@ class ObjectBase:
                 self.oncollide(obj)
                 obj.oncollide(self)
 
+    def is_touching(self, other:'ObjectBase'):
+        me = self.polygon
+        you = other.point_array
+
+        for p in you:
+            if me.contains_point(p):
+                return True
+        return False
+
     def time_move(self, x_velocity:float, y_velocity:float):
         self.move(x_velocity * self.time_delta, y_velocity * self.time_delta)
 
@@ -109,6 +128,21 @@ class ObjectBase:
                 if rect_a_touch_b(self.rect, obj.rect):
                     return True
         return False
+
+    def get_all_type(self, model:str):
+        matches = []
+        for obj in self.parent.props.array:
+            if obj.model_type == model:
+                matches.append(obj)
+        return matches
+
+    def highlight_point(self, point, y=None, color=(255, 255, 255), radius=5):
+        if y is None:
+            x, y = point
+        else:
+            x = point
+        pygame.draw.circle(self.screen, color, (int(x), int(y)), radius)
+
 
     def update(self, pressed_keys):
         pass

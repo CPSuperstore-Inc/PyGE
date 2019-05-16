@@ -4,7 +4,7 @@ import typing
 
 import pygame
 
-from SideScroller.Globals.Cache import set_spritesheet, set_image
+from SideScroller.Globals.Cache import set_spritesheet, set_image, set_sound
 from SideScroller.Globals.GlobalVariable import set_var, set_sys_var
 from SideScroller.Misc.Computer import get_monitor_resolution
 from SideScroller.SideScroller import SideScroller
@@ -12,7 +12,7 @@ from SideScroller.utils import get_optional
 
 
 def side_scroller(
-        xml:str, start_room:str, images=None, sprite_sheets=None, development_screen_size:tuple=None, refresh_rate:int=60,
+        xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, development_screen_size:tuple=None, refresh_rate:int=60,
         caption:str= "Python Side Scroller Engine", icon:str=None, loading_screen:callable=None, min_loading_time:int=0,
         custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
         debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True
@@ -88,6 +88,9 @@ def side_scroller(
     if images is None:
         images = {}
 
+    if sounds is None:
+        sounds = {}
+
     if icon is not None:
         pygame.display.set_icon(pygame.image.load(icon))
 
@@ -96,6 +99,9 @@ def side_scroller(
 
     for name, props in sprite_sheets.items():
         set_spritesheet(name, props["path"], props["w"], props["h"], props["duration"], get_optional(props, "final_size", None), get_optional(props, "invisible_color", (0, 0, 1)))
+
+    for name, props in sounds.items():
+        set_sound(name, props["path"], get_optional(props, "volume", 1.0, float))
 
     clock = pygame.time.Clock()
     game = SideScroller(screen, xml, start_room, custom_objects)

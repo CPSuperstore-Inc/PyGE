@@ -7,6 +7,7 @@ from SideScroller.utils import scale_image
 
 images = {}
 spritesheets = {}
+sounds = {}
 
 
 def set_image(name, path, width=None, height=None):
@@ -42,3 +43,11 @@ def set_spritesheet(name, image:str, w:int, h:int, duration:float=None, final_si
 def get_spritesheet(name):
     return spritesheets[name]
 
+
+def set_sound(name:str, path:str, volume:float=1):
+    sounds[name] = pygame.mixer.Sound(path)
+    sounds[name].set_volume(volume)
+
+
+def get_sound(name):
+    return sounds[name]

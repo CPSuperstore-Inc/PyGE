@@ -57,6 +57,7 @@ class TextFade(ObjectBase):
     # endregion
 
     def fade_in(self, duration:float=None, alpha_per_s:float=None):
+        self.alpha = 0
         if duration is not None:
             self.fade_speed = 255 / duration
         elif alpha_per_s is not None:
@@ -66,15 +67,17 @@ class TextFade(ObjectBase):
 
     def fade_out(self, duration:float=None, alpha_per_s:float=None):
         self.fade_in(duration, alpha_per_s)
+        self.alpha = 255
         self.fade_speed *= -1
 
     def draw(self):
         if self.fade_speed != 0:
             change = self.time_delta * self.fade_speed
             self.alpha += change
-            if self.alpha >= 255 or self.alpha <= 0:
-                self.onfadecomplete(self.fade_speed > 0)
+            if self.alpha > 255 or self.alpha < 0:
+                fade_in = self.fade_speed > 0
                 self.fade_speed = 0
+                self.onfadecomplete(fade_in)
         self.draw_alpha(self.text_object, self.alpha)
 
     def onfadecomplete(self, fade_in:bool):

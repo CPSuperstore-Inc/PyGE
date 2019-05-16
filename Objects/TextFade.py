@@ -28,6 +28,10 @@ class TextFade(ObjectBase):
 
         ObjectBase.__init__(self, screen, args, parent)
 
+    @property
+    def rect(self):
+        return self.x, self.y, self.text_object.get_width(), self.text_object.get_height()
+
     def generate_font(self):
         self.font_object = pygame.font.Font(self.font, self.size)
 

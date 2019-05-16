@@ -2,6 +2,7 @@ import pygame
 
 from SideScroller.Globals.GlobalVariable import get_var
 
+
 def get_optional(dic: dict, key: str, default, return_type:type=None):
     if key in dic:
         val = dic[key]
@@ -94,3 +95,10 @@ def scale_coords(coords:tuple, factor:float=None):
 
 def safe_int(val: float):
     return int(round(val, 0))
+
+
+def center_on_screen(obj, screen):
+    sw, sh = screen.get_size()
+    _, _, ow, oh = obj.rect
+
+    return (sw / 2) - (ow / 2), (sh / 2) - (oh / 2)

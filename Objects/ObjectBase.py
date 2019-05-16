@@ -3,7 +3,7 @@ import typing
 import pygame
 
 from SideScroller.Misc.Ticker import Ticker
-from SideScroller.utils import get_mandatory, rect_a_touch_b, scale_coords
+from SideScroller.utils import get_mandatory, rect_a_touch_b, scale_coords, get_optional
 from SideScroller.DisplayMethods.Color import Color, DisplayBase
 from SideScroller.Globals.GlobalVariable import get_sys_var
 
@@ -16,6 +16,8 @@ class ObjectBase:
 
         self.x = get_mandatory(args, "@x", int)
         self.y = get_mandatory(args, "@y", int)
+
+        self.locked = get_optional(args, "@locked", "false")
 
         self.x, self.y = scale_coords((self.x, self.y))
 
@@ -36,6 +38,8 @@ class ObjectBase:
 
         self.x_delta = 0
         self.y_delta = 0
+
+        self.model_type = type(self).__name__
 
         self.debug_color = get_sys_var("debug-color")
 
@@ -61,6 +65,8 @@ class ObjectBase:
         self.time_delta = self.ticker.tick
 
     def move(self, x, y, fire_onscreen_event=True):
+        if self.locked == "true":
+            return True
         self.x += x
         self.y -= y
         self.x_delta = x
@@ -96,6 +102,13 @@ class ObjectBase:
 
     def change_room(self, new_room):
         self.parent.parent.set_room(new_room)
+
+    def is_touching_type(self, model:str):
+        for obj in self.parent.props.array:
+            if obj.model_type == model:
+                if rect_a_touch_b(self.rect, obj.rect):
+                    return True
+        return False
 
     def update(self, pressed_keys):
         pass

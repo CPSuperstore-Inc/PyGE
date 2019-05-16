@@ -143,6 +143,17 @@ class ObjectBase:
             x = point
         pygame.draw.circle(self.screen, color, (int(x), int(y)), radius)
 
+    def draw_alpha(self, source, opacity, pos=None):
+        if pos is None:
+            x, y = (self.x, self.y)
+        else:
+            x, y = pos
+        # noinspection PyArgumentList
+        temp = pygame.Surface((source.get_width(), source.get_height())).convert()
+        temp.blit(self.screen, (-x, -y))
+        temp.blit(source, (0, 0))
+        temp.set_alpha(opacity)
+        self.screen.blit(temp, (x, y))
 
     def update(self, pressed_keys):
         pass

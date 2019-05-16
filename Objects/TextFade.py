@@ -77,8 +77,5 @@ class TextFade(ObjectBase):
                 self.fade_speed = 0
         self.draw_alpha(self.text_object, self.alpha)
 
-    def oncreate(self):
-        self.fade_in(duration=1)
-
     def onfadecomplete(self, fade_in:bool):
         pass

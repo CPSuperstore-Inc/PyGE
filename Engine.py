@@ -17,6 +17,28 @@ def side_scroller(
         custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
         debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True
 ):
+    """
+    This is the function which starts the engine.
+    This is the single most important function in the entire system.
+    :param xml: The XML data to build the game from
+    :param start_room: The name of the room to start the player in
+    :param images: A dictionary of the images, and their names to pre-load into the image cache. The value must be a dict object. Use "path" to specify the path to the image, "w" to specify the width to scale the image to (optional) and "h" to specify the height to scale the image to (optional)
+    :param sprite_sheets: A dictionary of the Sprite Sheets, and their names to pre-load into the Sprite Sheets cache. Use "path" to specify the path to the sheet, "w" to specify the number of rows are in the sheet, "h" to specify the number of cols that are in the sheet, "duration" to specify the length of time to stay on each image, final_size as the size to scale each image to (format: [width, height]), and "invisible_color" as some RGB color which will be ignored. (in general, select a color not in any of the images)
+    :param sounds: A dictionary of the sounds and their names to pre-load to the sound cache. Use "path" to specify the path to the sound, "volume" to specify the volume to play the sound at
+    :param development_screen_size: The size of the screen you develop with. We recomend 800x500. The screen can be scaled to the user's screen with different configurations (see below)
+    :param refresh_rate: The maximum refresh rate of the game. Note: all movement is time-based, and independent of the framerate
+    :param caption: The text to be shown as the game window's title 
+    :param icon: the path to the image to set as the window's icon
+    :param loading_screen: The reference to the function to use as the loading animation. The function must take 1 arguement, which is the PyGame surface to do all of the drawing to
+    :param min_loading_time: The mimumum amount of loading time the user will see on game launch. The game will load in the background. On completion, if there is still time left, your animation will continue until this time has been met
+    :param custom_objects: The list of the refrences of the classes of your custom objects used in the XML. NOTE: Each object MUST inherit from the ObjectBase class (from SideScroller.Objects.ObjectBase import ObjectBase) 
+    :param enable_alt_f4: If the window should be closable via the Alt+F4 keyboard shortcut
+    :param initial_variables: A dictionary of the variables, and initial values (usefull when objects require variables to load)
+    :param fullscreen: If the game should run in fullscreen mode
+    :param debug: If the game should run in debug mode (every object is drawn with the hitbox showing)
+    :param debug_color: The color to draw the debug hitbox (can be specified individually per Object) 
+    :param auto_scale: If the engine should scale the screen to best fit the user's monitor 
+    """
 
     set_sys_var("debug", debug)
     set_sys_var("debug-color", debug_color)

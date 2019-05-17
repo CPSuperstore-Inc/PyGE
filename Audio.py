@@ -10,6 +10,10 @@ for c in range(CHANNELS):
 
 
 def get_free_channel():
+    """
+    This function searches the pool of channels for a free one
+    :return: A free channel
+    """
     index = -1
     for chan in channels:
         index += 1
@@ -18,5 +22,9 @@ def get_free_channel():
 
 
 def playsound(sound):
+    """
+    Plays a sound on a free channel
+    :param sound: Any sound object (We recomend you only use sounds in the cache, however, you can load a new sound and play it here) 
+    """
     chan = get_free_channel()
     chan.play(sound)

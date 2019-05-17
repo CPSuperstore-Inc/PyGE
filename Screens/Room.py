@@ -15,6 +15,10 @@ HALL = 0
 
 class Room(ScreenBase):
     def __init__(self, screen, data:dict, custom_objects:typing.List, parent):
+        """
+        The object which manages, and stores every object in a room
+        NOTE: Only key functions are documented, which are available to each object via the "parent" variable in each class
+        """
         ScreenBase.__init__(self, screen)
         self.name = get_mandatory(data, "@name")
         self.props = ASQL()
@@ -105,7 +109,15 @@ class Room(ScreenBase):
                     prop.onkeyup(event.key, event.mod, event.scancode)
                 prop.onevent(event)
 
-    def move_many(self, objects: typing.List['ObjectBase'], x, y, fire_onscreen_event:bool=True, static: typing.List['ObjectBase']=None, check_collision:bool=False):
+    def move_many(self, objects: typing.List['ObjectBase'], x, y, fire_onscreen_event:bool=True, static: typing.List['ObjectBase']=None):
+        """
+        Moves many objects by a factor of x, and y
+        :param objects: The list of objects to move
+        :param x: The distance (in pixels) to move each object by along the x axis
+        :param y: The distance (in pixels) to move each object by along the y axis
+        :param fire_onscreen_event: If the "onscreen" event should be fired if an object moves on screen while being moved
+        :param static: The list of objects which each object that is moving should check collision against. If not specified, use all objects. If there is collision, all movement will be undone  
+        """
         if static is None:
             static = self.props
 

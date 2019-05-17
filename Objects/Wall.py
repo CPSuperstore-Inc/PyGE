@@ -16,3 +16,6 @@ class Wall(ObjectBase):
 
     def draw(self):
         self.display.draw(self.x, self.y)
+
+    def onkeydown(self, unicode, key, modifer, scancode):
+        print(unicode, key, modifer, scancode)

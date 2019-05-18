@@ -19,6 +19,8 @@ def set_image(name, path, width=None, height=None):
     :param width: The new width of the image
     :param height: The new height of the image
     """
+    if not os.path.isfile(path):
+        raise FileNotFoundError("The File You Have Requested '{}' Could Not Be Located. Please Check The Path, And Ensure The File Exists.".format(path))
     img = pygame.image.load(path)
     if width is None:
         width = img.get_width()
@@ -67,6 +69,8 @@ def set_spritesheet(name, image:str, w:int, h:int, duration:float=None, final_si
     :param final_size: The size to scale each frame to in the format (width, height)
     :param invisible_color: Some RGB color which will be ignored. (in general, select a color not in any of the images)
     """
+    if not os.path.isfile(image):
+        raise FileNotFoundError("The File You Have Requested '{}' Could Not Be Located. Please Check The Path, And Ensure The File Exists.".format(image))
     spritesheets[name] = SpriteSheet(image, w, h, duration, final_size, invisible_color)
 
 
@@ -86,6 +90,8 @@ def set_sound(name:str, path:str, volume:float=1):
     :param path: The path of the sound
     :param volume: The volume to play the sound at (1 = Full, 0 = Mute)
     """
+    if not os.path.isfile(path):
+        raise FileNotFoundError("The File You Have Requested '{}' Could Not Be Located. Please Check The Path, And Ensure The File Exists.".format(path))
     sounds[name] = pygame.mixer.Sound(path)
     sounds[name].set_volume(volume)
 

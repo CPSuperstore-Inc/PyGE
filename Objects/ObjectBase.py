@@ -1,7 +1,7 @@
 import typing
 
 import pygame
-import matplotlib.path as mplPath
+import matplotlib.path as mpl_path
 import numpy as np
 
 from SideScroller.Misc.Ticker import Ticker
@@ -89,7 +89,7 @@ class ObjectBase:
         Returns a polygon representaion of the object (As a MatPlotLib Path object)
         :return: 
         """
-        return mplPath.Path(np.array(self.point_array))
+        return mpl_path.Path(np.array(self.point_array))
 
     def system_onroomenter(self):
         self.ticker = Ticker()

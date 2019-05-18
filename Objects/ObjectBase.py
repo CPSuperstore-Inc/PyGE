@@ -125,7 +125,15 @@ class ObjectBase:
         return onscreen
 
     def add_object(self, class_type: str, args, x=None, y=None):
-        self.parent.add_object(class_type, args, x, y)
+        """
+        Creates a new object, and adds it to the current room
+        :param class_type: The name of the class to add
+        :param args: A dictionary of arguments to send to the new object (The '@' sign is not a mandatory prefix for each object)
+        :param x: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place 
+        :param y: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place 
+        :return: The newly created object
+        """
+        return self.parent.add_object(class_type, args, x, y)
 
     def collision_detecion(self, objects: typing.List['ObjectBase']):
         """

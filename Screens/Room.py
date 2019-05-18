@@ -132,15 +132,28 @@ class Room(ScreenBase):
             for p in objects:
                 p.undo_last_move()
 
-    def add_object(self, class_type:str, args, x=None, y=None):
+    def add_object(self, class_type:str, args:dict, x=None, y=None):
+        """
+        Creates a new object, and adds it to the current room
+        :param class_type: The name of the class to add
+        :param args: A dictionary of arguments to send to the new object (The '@' sign is not a mandatory prefix for each object)
+        :param x: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place 
+        :param y: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place 
+        :return: The newly created object
+        """
         if x is not None:
             args["@x"] = x
 
         if y is not None:
             args["@y"] = y
 
+        for a in list(args.keys())[:]:
+            if not a.startswith("@"):
+                args["@" + a] = args[a]
+
         for c in self.parent.custom_objects:
             if c.__name__ == class_type:
-                self.props.append(c(self.screen, args, self))
-                break
+                obj = c(self.screen, args, self)
+                self.props.append(obj)
+                return obj
 

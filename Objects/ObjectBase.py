@@ -87,9 +87,19 @@ class ObjectBase:
     def polygon(self):
         """
         Returns a polygon representaion of the object (As a MatPlotLib Path object)
-        :return: 
         """
         return mpl_path.Path(np.array(self.point_array))
+
+    @property
+    def metadata(self):
+        """
+        Returns this object's metadata (the values which will be written to the XML file)
+        """
+        return {
+            "x": self.x,
+            "y": self.y,
+            "locked": self.locked
+        }
 
     def system_onroomenter(self):
         self.ticker = Ticker()

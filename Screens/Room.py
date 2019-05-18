@@ -87,12 +87,12 @@ class Room(ScreenBase):
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if point_in_rect(event.pos, prop.rect):
-                        prop.onclick(event.pos, event.button)
-                    prop.onmousedown(event.pos, event.button)
+                        prop.onclick(event.button, event.pos)
+                    prop.onmousedown(event.button, event.pos)
                 if event.type == pygame.MOUSEBUTTONUP:
                     if point_in_rect(event.pos, prop.rect):
-                        prop.onrelease(event.pos, event.button)
-                    prop.onmouseup(event.pos, event.button)
+                        prop.onrelease(event.button, event.pos)
+                    prop.onmouseup(event.button, event.pos)
                 if event.type == pygame.MOUSEMOTION:
                     prop.onmousemotion(event.pos, event.rel, event.buttons)
                     if point_in_rect(event.pos, prop.rect):

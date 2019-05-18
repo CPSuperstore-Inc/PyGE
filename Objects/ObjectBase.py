@@ -124,6 +124,9 @@ class ObjectBase:
 
         return onscreen
 
+    def add_object(self, class_type: str, args, x=None, y=None):
+        self.parent.add_object(class_type, args, x, y)
+
     def collision_detecion(self, objects: typing.List['ObjectBase']):
         """
         Checks collision between this object, and a list of other objects.

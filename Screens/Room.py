@@ -131,3 +131,16 @@ class Room(ScreenBase):
         if abort:
             for p in objects:
                 p.undo_last_move()
+
+    def add_object(self, class_type:str, args, x=None, y=None):
+        if x is not None:
+            args["@x"] = x
+
+        if y is not None:
+            args["@y"] = y
+
+        for c in self.parent.custom_objects:
+            if c.__name__ == class_type:
+                self.props.append(c(self.screen, args, self))
+                break
+

@@ -22,6 +22,15 @@ class Sound(ObjectBase):
         self.repetition = -1
         self.sound = get_sound(self.src)
 
+    @property
+    def metadata(self):
+        return {
+            "x": self.x,
+            "y": self.y,
+            "src": self.src,
+            "repeat": self.repetitions
+        }
+
     def update(self, pressed_keys):
         if self.channel.get_busy() == 0:
             if (self.repetition < self.repetitions or self.repetitions == -1) and self.playing:

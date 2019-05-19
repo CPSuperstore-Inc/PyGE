@@ -16,3 +16,9 @@ class Wall(ObjectBase):
 
     def draw(self):
         self.display.draw(self.x, self.y)
+
+    @property
+    def metadata(self):
+        return {
+            "color": self.display.color
+        }

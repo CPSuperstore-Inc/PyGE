@@ -29,6 +29,19 @@ class TextFade(ObjectBase):
         ObjectBase.__init__(self, screen, args, parent)
 
     @property
+    def metadata(self):
+        return {
+            "x": self.x,
+            "y": self.y,
+            "font": self.font,
+            "size": self.size,
+            "alpha": self.alpha,
+            "color": self.color,
+            "antialiasing": self.antialiasing,
+            "text": self.text,
+        }
+
+    @property
     def rect(self):
         return self.x, self.y, self.text_object.get_width(), self.text_object.get_height()
 

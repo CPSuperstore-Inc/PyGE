@@ -103,6 +103,13 @@ class ObjectBase:
             "locked": self.locked
         }
 
+    @property
+    def rooms(self):
+        """
+        Returns a dictionary representation of the rooms in memory
+        """
+        return self.parent.parent.rooms
+
     def set_metadata(self, values:dict):
         """
         Reloads the object from the provided metadata
@@ -121,6 +128,20 @@ class ObjectBase:
         :return: the reference to the class of the registered object
         """
         return self.parent.register_object(path, class_name)
+
+    def add_room(self, name):
+        """
+        Creates a new empty room object
+        :param name: the reference name of the room
+        :return: the newly created room object
+        """
+        return self.parent.add_room(name)
+
+    def delete_room(self, name):
+        self.parent.delete_room(name)
+
+    def rename_room(self, old, new):
+        self.parent.rename_room(old, new)
 
     def system_onroomenter(self):
         self.ticker = Ticker()

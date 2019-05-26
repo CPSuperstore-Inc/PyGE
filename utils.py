@@ -15,16 +15,29 @@ def convert_color(color:str):
      :param color: the string representaion 
      :return: a valid RGB color tuple
      """
+
+    def cmyk_to_rgb(vals:tuple):
+        if len(vals) == 3:
+            return vals
+        if len(vals) == 4:
+            c, m, y, k = vals
+            rgb_scale = 255
+            cmyk_scale = 100
+            r = rgb_scale * (1.0 - (c + k) / float(cmyk_scale))
+            g = rgb_scale * (1.0 - (m + k) / float(cmyk_scale))
+            b = rgb_scale * (1.0 - (y + k) / float(cmyk_scale))
+            return r, g, b
+
     # TODO: MAKE THIS WAAAAAAAY MORE EFFICIENT
     # RGB variants
     try:
-        return eval(color)
+        return cmyk_to_rgb(eval(color))
     except (SyntaxError, NameError):
         try:
-            return eval("({})".format(",".join(color.split(" "))))
+            return cmyk_to_rgb(eval("({})".format(",".join(color.split(" ")))))
         except (SyntaxError, NameError):
             try:
-                return eval("({})".format(color))
+                return cmyk_to_rgb(eval("({})".format(color)))
             except (SyntaxError, NameError):
                 # is it hex?
                 return tuple(int(color.strip("#")[i:i + 2], 16) for i in (0, 2, 4))

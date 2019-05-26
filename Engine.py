@@ -15,7 +15,8 @@ def side_scroller(
         xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, development_screen_size:tuple=None, refresh_rate:int=60,
         caption:str= "Python Side Scroller Engine", icon:str=None, loading_screen:callable=None, min_loading_time:int=0,
         custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
-        debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True, default_image:str=None, default_spritesheet:str=None
+        debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True, default_image:str=None,
+        default_spritesheet:str=None, post_load:callable=None, alt_side_scroller=None
 ):
     """
     This is the function which starts the engine.
@@ -39,7 +40,9 @@ def side_scroller(
     :param debug_color: The color to draw the debug hitbox (can be specified individually per Object) 
     :param auto_scale: If the engine should scale the screen to best fit the user's monitor 
     :param default_image: The name of the image (saved in the cache) to be used in the event of an unknown image requested from the cahce
-    :param default_spritesheet: The name of the spritesheet (saved in the cache) to be used in the event of an unknown spritesheet requested from the cahce 
+    :param default_spritesheet: The name of the spritesheet (saved in the cache) to be used in the event of an unknown spritesheet requested from the cahce
+    :param post_load: The funtion which will be called after everything has been loaded, but before the game starts
+    :param alt_side_scroller: An alternate SideScroller class to use as the core engine. NOTE: MUST INHERIT FROM SideScroller CLASS in SideScroller/SideScroller.py
     """
 
 
@@ -133,11 +136,17 @@ def side_scroller(
     set_default_spritesheet(default_spritesheet)
 
     clock = pygame.time.Clock()
-    game = SideScroller(screen, xml, start_room, custom_objects)
+    class_ref = SideScroller
+    if alt_side_scroller is not None:
+        class_ref = alt_side_scroller
+    game = class_ref(screen, xml, start_room, custom_objects)
 
     load_duration = time.time() - load_start
     if load_duration < min_loading_time:
         time.sleep(min_loading_time - load_duration)
+
+    if post_load is not None:
+        post_load()
 
     set_var("loaded", True)
 

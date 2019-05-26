@@ -55,3 +55,15 @@ class SideScroller:
                     .format(room)
             )
         self.room.enter_room()
+
+    def add_room(self, name):
+        self.rooms[name] = Room(self.screen, {"@name": name}, self.custom_objects, self)
+        return self.rooms[name]
+
+    def delete_room(self, name):
+        del self.rooms[name]
+
+    def rename_room(self, old, new):
+        self.rooms[new] = self.rooms[old]
+        self.rooms[new].name = new
+        self.delete_room(old)

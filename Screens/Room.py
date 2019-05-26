@@ -164,3 +164,11 @@ class Room(ScreenBase):
                 self.props.append(obj)
                 return obj
 
+    def add_room(self, name):
+        return self.parent.add_room(name)
+
+    def delete_room(self, name):
+        self.parent.delete_room(name)
+
+    def rename_room(self, old, new):
+        self.parent.rename_room(old, new)

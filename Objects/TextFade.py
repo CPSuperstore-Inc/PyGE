@@ -3,7 +3,7 @@ import pygame
 from SideScroller.Objects.ObjectBase import ObjectBase
 from SideScroller.Misc.Function import Function
 from SideScroller.Screens.Room import Room
-from SideScroller.utils import get_optional, get_mandatory
+from SideScroller.utils import get_optional, get_mandatory, convert_color
 
 
 class TextFade(ObjectBase):
@@ -19,7 +19,7 @@ class TextFade(ObjectBase):
 
         self.alpha = get_optional(args, "@alpha", 255, int)
 
-        self.color = eval(get_mandatory(args, "@color", str))
+        self.color = convert_color(get_mandatory(args, "@color", str))
         self.antialiasing = bool(get_optional(args, "@antialiasing", 1, int))
         self.text = get_optional(args, "@text", "", str)
 

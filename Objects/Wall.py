@@ -4,6 +4,7 @@ from SideScroller.Objects.ObjectBase import ObjectBase
 from SideScroller.DisplayMethods.Color import Color
 from SideScroller.Screens.Room import Room
 from SideScroller.Globals.GlobalVariable import get_var
+from SideScroller.utils import convert_color
 
 
 class Wall(ObjectBase):
@@ -12,7 +13,7 @@ class Wall(ObjectBase):
         args["@x"] = 0
         args["@y"] = 0
         ObjectBase.__init__(self, screen, args, parent)
-        self.set_display_method(Color(screen, eval(args["@color"]), screen.get_width(), screen.get_height() - height))
+        self.set_display_method(Color(screen, convert_color(args["@color"]), screen.get_width(), screen.get_height() - height))
 
     def draw(self):
         self.display.draw(self.x, self.y)

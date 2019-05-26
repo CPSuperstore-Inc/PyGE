@@ -12,6 +12,7 @@ class Queue:
 
     @property
     def next(self):
+        if len(self.queue) == 0: return None
         item = self.queue[0]
         del self.queue[0]
         return item

@@ -52,6 +52,8 @@ class ObjectBase:
 
         self.debug_color = get_sys_var("debug-color")
 
+        self.siblings = self.parent.props.array
+
         self.oncreate()
 
     def set_display_method(self, method:'DisplayBase'):
@@ -100,6 +102,25 @@ class ObjectBase:
             "y": self.y,
             "locked": self.locked
         }
+
+    def set_metadata(self, values:dict):
+        """
+        Reloads the object from the provided metadata
+        :param values: the dictonary to load the object from
+        """
+        for v in list(values.keys()):
+            values["@{}".format(v)] = values[v]
+        self.__init__(self.screen, values, self.parent)
+        self.oncreate()
+
+    def register_object(self, path: str, class_name:str):
+        """
+        Registers a new object class
+        :param path: the path to the file of the new object
+        :param class_name: the name of the class from the file to create from
+        :return: the reference to the class of the registered object
+        """
+        return self.parent.register_object(path, class_name)
 
     def system_onroomenter(self):
         self.ticker = Ticker()
@@ -187,13 +208,18 @@ class ObjectBase:
         """
         self.move(-self.x_delta, -self.y_delta, fire_onscreen_event=False)
 
-    def delete(self):
+    def delete(self, obj:'ObjectBase'=None, fire_event:bool=True):
         """
         Deletes this object from memory
         This also fires the "ondelete" event
+        :param obj: The reference of the object to delete (leave blank to delete this object)
+        :param fire_event: If the "ondelete" event should also be triggered
         """
-        self.ondelete()
-        self.deleted = True
+        delete = self
+        if obj is not None:
+            delete = obj
+        if fire_event: delete.ondelete()
+        delete.deleted = True
 
     def change_room(self, new_room):
         """

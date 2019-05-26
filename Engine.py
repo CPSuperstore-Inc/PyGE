@@ -4,7 +4,7 @@ import typing
 
 import pygame
 
-from SideScroller.Globals.Cache import set_spritesheet, set_image, set_sound
+from SideScroller.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet
 from SideScroller.Globals.GlobalVariable import set_var, set_sys_var
 from SideScroller.Misc.Computer import get_monitor_resolution
 from SideScroller.SideScroller import SideScroller
@@ -15,7 +15,7 @@ def side_scroller(
         xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, development_screen_size:tuple=None, refresh_rate:int=60,
         caption:str= "Python Side Scroller Engine", icon:str=None, loading_screen:callable=None, min_loading_time:int=0,
         custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
-        debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True
+        debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True, default_image:str=None, default_spritesheet:str=None
 ):
     """
     This is the function which starts the engine.
@@ -38,7 +38,11 @@ def side_scroller(
     :param debug: If the game should run in debug mode (every object is drawn with the hitbox showing)
     :param debug_color: The color to draw the debug hitbox (can be specified individually per Object) 
     :param auto_scale: If the engine should scale the screen to best fit the user's monitor 
+    :param default_image: The name of the image (saved in the cache) to be used in the event of an unknown image requested from the cahce
+    :param default_spritesheet: The name of the spritesheet (saved in the cache) to be used in the event of an unknown spritesheet requested from the cahce 
     """
+
+
 
     set_sys_var("debug", debug)
     set_sys_var("debug-color", debug_color)
@@ -124,6 +128,9 @@ def side_scroller(
 
     for name, props in sounds.items():
         set_sound(name, props["path"], get_optional(props, "volume", 1.0, float))
+
+    set_default_image(default_image)
+    set_default_spritesheet(default_spritesheet)
 
     clock = pygame.time.Clock()
     game = SideScroller(screen, xml, start_room, custom_objects)

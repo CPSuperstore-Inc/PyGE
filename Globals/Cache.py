@@ -11,6 +11,20 @@ spritesheets = {}   # spritesheet cache
 sounds = {}         # sound cache
 
 
+DEFAULT_IMAGE = None            # The default image (MUST BE STORED IN THE CACHE!)
+DEFAULT_SPRITE_SHEET = None     # The default spritesheet (MUST BE STORED IN THE CACHE!)
+
+
+def set_default_image(name):
+    global DEFAULT_IMAGE
+    DEFAULT_IMAGE = name
+
+
+def set_default_spritesheet(name):
+    global DEFAULT_SPRITE_SHEET
+    DEFAULT_SPRITE_SHEET = name
+
+
 def set_image(name, path, width=None, height=None):
     """
     Loads a single image into the image cache 
@@ -35,6 +49,8 @@ def get_image(name):
     :param name: The name of the image
     :return: The image from the cache
     """
+    if name not in images and DEFAULT_IMAGE is not None:
+        return images[DEFAULT_IMAGE]
     return images[name]
 
 
@@ -80,6 +96,8 @@ def get_spritesheet(name):
     :param name: The name of the spritesheet
     :return: The spritesheet with the specified name
     """
+    if name not in spritesheets and DEFAULT_SPRITE_SHEET is not None:
+        return spritesheets[DEFAULT_SPRITE_SHEET]
     return spritesheets[name]
 
 

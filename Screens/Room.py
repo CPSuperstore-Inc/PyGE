@@ -52,6 +52,13 @@ class Room(ScreenBase):
                             "The Object '{0}' Is Referenced In The XML, But Is Not Declared. Please Place A Reference To The '{0}' Class In The 'custom_objects' List When Calling The 'side_scroller' Function.".format(
                                 item))
 
+    def register_object(self, path:str, class_name:str):
+        path = path.replace("\\", ".").replace("/", ".").replace(".py", "")
+        class_name = class_name.replace(".py", "")
+        mod = __import__(path, fromlist=[''])
+        class_ref = getattr(mod, class_name)
+        self.custom_objects.append(class_ref)
+        return class_ref
 
     def enter_room(self):
         for prop in self.props.array:

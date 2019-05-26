@@ -1,6 +1,35 @@
 import pygame
 
 
+def convert_color(color:str):
+    """
+     Converts the string representation of a color to a valid RGB tuple
+     ACCEPTABLE FORMATS (r=red, g=green, b=blue):
+         - RGB FORMATS -
+         (r, g, b)
+         r g b
+         r, g, b
+         - HEX FORMATS -
+         rrggbb
+         #rrggbb
+     :param color: the string representaion 
+     :return: a valid RGB color tuple
+     """
+    # TODO: MAKE THIS WAAAAAAAY MORE EFFICIENT
+    # RGB variants
+    try:
+        return eval(color)
+    except (SyntaxError, NameError):
+        try:
+            return eval("({})".format(",".join(color.split(" "))))
+        except (SyntaxError, NameError):
+            try:
+                return eval("({})".format(color))
+            except (SyntaxError, NameError):
+                # is it hex?
+                return tuple(int(color.strip("#")[i:i + 2], 16) for i in (0, 2, 4))
+
+
 def get_optional(dic: dict, key: str, default, return_type:type=None):
     """
     Returns either the value in a dictionary, or a default value specified if the value is not in the dictionary
@@ -34,7 +63,7 @@ def get_mandatory(dic: dict, key: str, return_type:type=None):
         if return_type is None:
             return dic[key]
         return return_type(dic[key])
-    raise ValueError("You Suck And Can Not Extract Key {} From {}".format(key, dic))
+    raise ValueError("Could Not Extract Key {} From {}".format(key, dic))
 
 
 def rect_a_touch_b(rect_a: tuple, rect_b: tuple):
@@ -94,7 +123,7 @@ def point_in_rect(point: tuple, rect: tuple):
     """
     x, y = point
     b_x, b_y, b_w, b_h = rect
-    return b_x < x < b_x + b_h and b_y < y < b_y + b_h
+    return b_x < x < b_x + b_w and b_y < y < b_y + b_h
 
 
 def deconstruct_modifier_bitmask(modifier):

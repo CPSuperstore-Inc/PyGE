@@ -16,6 +16,9 @@ class SpriteSheet:
         :param invisible_color: the color which is invisible (DO NOT PICK A COLOR ON YOUR SPRITESHEET!)
         """
         self.base_image = pygame.image.load(image)
+        self.path = image
+        self.w = w
+        self.h = h
         self.images = []
         self.duration = duration
         self.last_change = time()

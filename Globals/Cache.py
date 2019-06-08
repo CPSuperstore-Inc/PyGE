@@ -9,6 +9,7 @@ from SideScroller.utils import scale_image
 images = {}         # image cache
 spritesheets = {}   # spritesheet cache
 sounds = {}         # sound cache
+image_paths = {}
 
 
 DEFAULT_IMAGE = None            # The default image (MUST BE STORED IN THE CACHE!)
@@ -16,11 +17,21 @@ DEFAULT_SPRITE_SHEET = None     # The default spritesheet (MUST BE STORED IN THE
 
 
 def set_default_image(name):
+    """
+    Sets the image (which must be stored in the image cache) which will be used in the event an image can not be found in the cache
+    Set to 'None' to have an exception thrown instead of use a default image
+    :param name: the name of the image in the image cache
+    """
     global DEFAULT_IMAGE
     DEFAULT_IMAGE = name
 
 
 def set_default_spritesheet(name):
+    """
+    Sets the spritesheet (which must be stored in the spritesheet cache) which will be used in the event an spritesheet can not be found in the cache
+    Set to 'None' to have an exception thrown instead of use a default spritesheet
+    :param name: the name of the spritesheet in the spritesheet cache
+    """
     global DEFAULT_SPRITE_SHEET
     DEFAULT_SPRITE_SHEET = name
 
@@ -40,6 +51,7 @@ def set_image(name, path, width=None, height=None):
         width = img.get_width()
     if height is None:
         height = img.get_height()
+    image_paths[name] = path
     images[name] = scale_image(pygame.transform.scale(img, (width, height)))
 
 
@@ -74,6 +86,43 @@ def cache_image_dir(dir_path:str, scale:float=1.0):
         images[name] = image
 
 
+def get_image_cache_list():
+    """
+    Formats the image in a list format. Each item in the list is a dictionary object in the format:
+    {"name": "image_reference_name", "path": "path_to_localy_saved_image", "w": "width_of_image", "h": "height_of_image"}
+    :return: the list of dictionaries describing each image in the cache
+    """
+    out = []
+    for name, image in images.items():
+        w, h = image.get_size()
+        out.append({
+            "name": name,
+            "path": image_paths[name],
+            "w": w,
+            "h": h
+        })
+    return out
+
+
+def get_image_paths():
+    """
+    Returns the reference name of each image in the cache, and the path in a dictionary format
+    :return: the dictionary of names and paths
+    """
+    return image_paths
+
+
+def clear_image_cache():
+    """
+    Clears the entire image cache
+    (WARNING: Don't forget to add images back to the cache before referencing them)
+    """
+    global images
+    global image_paths
+    image_paths = {}
+    images = {}
+
+
 def set_spritesheet(name, image:str, w:int, h:int, duration:float=None, final_size:tuple=None, invisible_color:tuple=(0, 0, 1)):
     """
     Loads a spritesheet into the spritesheet cache
@@ -99,6 +148,25 @@ def get_spritesheet(name):
     if name not in spritesheets and DEFAULT_SPRITE_SHEET is not None:
         return spritesheets[DEFAULT_SPRITE_SHEET]
     return spritesheets[name]
+
+
+def get_spritesheet_cache_list():
+    """
+    Formats the sprite sheets in a list format. Each item in the list is a dictionary object
+    :return: the list of dictionaries describing each image in the cache
+    """
+    out = []
+    for name, ss in spritesheets.items():   #type: str, SpriteSheet
+        out.append({
+            "name": name,
+            "path": ss.path,
+            "w": ss.w,
+            "h": ss.h,
+            "duration": ss.duration,
+            "final_size": ss.final_size,
+            "invisible_color": ss.invisible_color
+        })
+    return out
 
 
 def set_sound(name:str, path:str, volume:float=1):

@@ -17,6 +17,8 @@ def convert_color(color:str):
      """
 
     def cmyk_to_rgb(vals:tuple):
+        if type(vals) is int:
+            return tuple(int(str(vals)[i:i + 2], 16) for i in (0, 2, 4))
         if len(vals) == 3:
             return vals
         if len(vals) == 4:

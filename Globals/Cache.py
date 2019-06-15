@@ -9,6 +9,7 @@ from SideScroller.utils import scale_image
 images = {}         # image cache
 spritesheets = {}   # spritesheet cache
 sounds = {}         # sound cache
+font = {}
 image_paths = {}
 
 
@@ -189,3 +190,31 @@ def get_sound(name):
     :return: The sound with the specified name
     """
     return sounds[name]
+
+
+def set_font(name:str, path:str, size:int, bold:bool=False, italic:bool=False):
+    """
+    Loads a font into the font cache based on the name
+    :param name: the name to save the font under (Recomended convention is [fontname][size]. Ex. Arial12, or CourierNew15)
+    :param path: the path to the .ttf/.otf file. A system font can be used, however, it HIGHLY discouraged as it WILL cause a fatal error when the project is exported
+    :param size: the size of the font (in pt) 
+    :param bold: if the font should be bolded (default is False)
+    :param italic: if the font should be italicised (default is False)
+    """
+    if not os.path.isfile(path):
+        print("WARNING: Font File '{}' Could Not Be Located!".format(path))
+        print("System Font Will Be Used In Place. This will cause a fatal error when project is exported")
+        f = pygame.font.SysFont(path, size, bold=bold, italic=italic)
+    else:
+        f = pygame.font.Font(path, size, bold=bold, italic=italic)
+
+    font[name] = f
+
+
+def get_font(name):
+    """
+    Retrurns the font in the cache with the specified name
+    :param name: the name of the font
+    :return: the font assigned to the provided name
+    """
+    return font[name]

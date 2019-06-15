@@ -4,7 +4,7 @@ import typing
 
 import pygame
 
-from SideScroller.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet
+from SideScroller.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet, set_font
 from SideScroller.Globals.GlobalVariable import set_var, set_sys_var
 from SideScroller.Misc.Computer import get_monitor_resolution
 from SideScroller.SideScroller import SideScroller
@@ -12,7 +12,7 @@ from SideScroller.utils import get_optional
 
 
 def side_scroller(
-        xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, development_screen_size:tuple=None, refresh_rate:int=60,
+        xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, development_screen_size:tuple=None, refresh_rate:int=60,
         caption:str= "Python Side Scroller Engine", icon:str=None, loading_screen:callable=None, min_loading_time:int=0,
         custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
         debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True, default_image:str=None,
@@ -26,6 +26,7 @@ def side_scroller(
     :param images: A dictionary of the images, and their names to pre-load into the image cache. The value must be a dict object. Use "path" to specify the path to the image, "w" to specify the width to scale the image to (optional) and "h" to specify the height to scale the image to (optional)
     :param sprite_sheets: A dictionary of the Sprite Sheets, and their names to pre-load into the Sprite Sheets cache. Use "path" to specify the path to the sheet, "w" to specify the number of rows are in the sheet, "h" to specify the number of cols that are in the sheet, "duration" to specify the length of time to stay on each image, final_size as the size to scale each image to (format: [width, height]), and "invisible_color" as some RGB color which will be ignored. (in general, select a color not in any of the images)
     :param sounds: A dictionary of the sounds and their names to pre-load to the sound cache. Use "path" to specify the path to the sound, "volume" to specify the volume to play the sound at
+    :param font: A dictionary of the fonts and their names to pre-load to the font cache. Use "path" to specify the path to the font, "size" to specify the font size, "bold" to specify if the font should be bold (default is False), and "italic" to specify if the font should be italicised (default is False)
     :param development_screen_size: The size of the screen you develop with. We recomend 800x500. The screen can be scaled to the user's screen with different configurations (see below)
     :param refresh_rate: The maximum refresh rate of the game. Note: all movement is time-based, and independent of the framerate
     :param caption: The text to be shown as the game window's title 
@@ -45,7 +46,15 @@ def side_scroller(
     :param alt_side_scroller: An alternate SideScroller class to use as the core engine. NOTE: MUST INHERIT FROM SideScroller CLASS in SideScroller/SideScroller.py
     """
 
-
+    tmp = []
+    for sublist in custom_objects:
+        if type(sublist) is list:
+            for item in sublist:
+                tmp.append(item)
+        else:
+            tmp.append(sublist)
+    custom_objects = tmp[:]
+    del tmp
 
     set_sys_var("debug", debug)
     set_sys_var("debug-color", debug_color)
@@ -120,6 +129,9 @@ def side_scroller(
     if sounds is None:
         sounds = {}
 
+    if font is None:
+        font = {}
+
     if icon is not None:
         pygame.display.set_icon(pygame.image.load(icon))
 
@@ -131,6 +143,9 @@ def side_scroller(
 
     for name, props in sounds.items():
         set_sound(name, props["path"], get_optional(props, "volume", 1.0, float))
+
+    for name, props in font.items():
+        set_font(name, props["path"], props["size"], bold=get_optional(props, "bold", False, bool), italic=get_optional(props, "italic", False, bool))
 
     set_default_image(default_image)
     set_default_spritesheet(default_spritesheet)

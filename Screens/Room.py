@@ -95,6 +95,8 @@ class Room(ScreenBase):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if point_in_rect(event.pos, prop.rect):
                         prop.onclick(event.button, event.pos)
+                    else:
+                        prop.onnotclick(event.button, event.pos)
                     prop.onmousedown(event.button, event.pos)
                 if event.type == pygame.MOUSEBUTTONUP:
                     if point_in_rect(event.pos, prop.rect):

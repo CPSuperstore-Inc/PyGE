@@ -120,6 +120,50 @@ class ObjectBase:
         self.__init__(self.screen, values, self.parent)
         self.oncreate()
 
+    def get_optional_arguement(self, key: str, default, return_type:type=None, is_literal_value=False):
+        """
+        Returns either the value in a dictionary, or a default value specified if the value is not in the dictionary
+        :param key: The key to look for in the arguement dictionary
+        :param default: The value to return if the value does not exits
+        :param return_type: The datatype to cast the result to (regardless if it is found or not)
+        :param is_literal_value: If the key specified is the literal key (True), or if it should try both the value, and the value preceded by the  @ sign
+        :return: Either the value in the dictionary, or the default value
+        """
+        return get_optional(self.args, key, default, return_type=return_type, is_literal_value=is_literal_value)
+
+
+    def get_mandatory_arguement(self, key: str, return_type:type=None, is_literal_value=False):
+        """
+        Returns the value in a dictionary. If the value does not exist, raise a ValueError
+        :param key: The key to look for in the arguement dictionary
+        :param return_type: The datatype to cast the result to (regardless if it is found or not)
+        :param is_literal_value: If the key specified is the literal key (True), or if it should try both the value, and the value preceded by the  @ sign
+        :return: The value in the dictionary
+        """
+        return get_mandatory(self.args, key, return_type=return_type, is_literal_value=is_literal_value)
+
+
+    def draw_to_screen(self, item=None, x=None, y=None):
+        """
+        Draws the item to the screen
+        :param item: the object to draw. This can be an object which inherits from the "DisplayBase" class (SideScroller.DisplayMethods.DisplayBase.DisplayBase), or a pygame surface. If not specified, the set display method will be used
+        :param x: the x position to draw the object at. If not specified, the object's x position will be used.
+        :param y: the y position to draw the object at. If not specified, the object's y position will be used.
+        """
+        if item is None:
+            item = self.display
+        if x is None:
+            x = self.x
+        if y is None:
+            y = self.y
+
+        if type(item) is DisplayBase:
+            item.draw(x, y)
+        elif type(item) is pygame.Surface:
+            self.screen.blit(item, (x, y))
+        else:
+            raise ValueError("Unknown Object Type \"{}\" ({}). Please only use objects which inherit from the \"DisplayBase\" class, or are Pygame Surfaces".format(item.__class__.__name__, type(item)))
+
     def register_object(self, path: str, class_name:str):
         """
         Registers a new object class
@@ -328,7 +372,14 @@ class ObjectBase:
         Overridable event run each time this object is clicked (the mouse changes to the down state)
         :param button: A tuple of the states of the mouse in the format (left_mouse, middle_mouse/mouse_wheel, right_mouse)
         :param pos: The position of the mouse cursor
-        :return: 
+        """
+        pass
+
+    def onnotclick(self, button, pos):
+        """
+        Overridable event run each time the user clicks, but has not clicked this object (the mouse changes to the down state)
+        :param button: A tuple of the states of the mouse in the format (left_mouse, middle_mouse/mouse_wheel, right_mouse)
+        :param pos: The position of the mouse cursor
         """
         pass
 

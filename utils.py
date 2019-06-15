@@ -1,5 +1,6 @@
 import pygame
-
+import SideScroller.Globals.Constants as Constants
+from xmltodict import OrderedDict
 
 def convert_color(color:str):
     """
@@ -30,6 +31,9 @@ def convert_color(color:str):
             b = rgb_scale * (1.0 - (y + k) / float(cmyk_scale))
             return r, g, b
 
+    if color in Constants.COLOR_NAMES:
+        color = Constants.COLOR_NAMES[color]
+
     # TODO: MAKE THIS WAAAAAAAY MORE EFFICIENT
     # RGB variants
     try:
@@ -45,7 +49,7 @@ def convert_color(color:str):
                 return tuple(int(color.strip("#")[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def get_optional(dic: dict, key: str, default, return_type:type=None):
+def get_optional(dic: dict, key: str, default, return_type:type=None, is_literal_value=False):
     """
     Returns either the value in a dictionary, or a default value specified if the value is not in the dictionary
     This is a very usefull tool when working with "args" from the XML map
@@ -53,10 +57,13 @@ def get_optional(dic: dict, key: str, default, return_type:type=None):
     :param key: The key to look for in the dictionary
     :param default: The value to return if the value does not exits
     :param return_type: The datatype to cast the result to (regardless if it is found or not)
+    :param is_literal_value: If the key specified is the literal key (True), or if it should try both the value, and the value preceded by the  @ sign
     :return: Either the value in the dictionary, or the default value
     """
     if key in dic:
         val = dic[key]
+    elif "@{}".format(key) in dic and is_literal_value is False:
+        val = dic["@{}".format(key)]
     else:
         val = default
 
@@ -65,20 +72,28 @@ def get_optional(dic: dict, key: str, default, return_type:type=None):
     return val
 
 
-def get_mandatory(dic: dict, key: str, return_type:type=None):
+def get_mandatory(dic: dict, key: str, return_type:type=None, is_literal_value=False):
     """
     Returns the value in a dictionary. If the value does not exist, raise a ValueError
     This is a very usefull tool when working with "args" from the XML map
     :param dic: The dictionary to parse 
     :param key: The key to look for in the dictionary
     :param return_type: The datatype to cast the result to (regardless if it is found or not)
+    :param is_literal_value: If the key specified is the literal key (True), or if it should try both the value, and the value preceded by the  @ sign
     :return: The value in the dictionary
     """
     if key in dic:
-        if return_type is None:
-            return dic[key]
-        return return_type(dic[key])
-    raise ValueError("Could Not Extract Key {} From {}".format(key, dic))
+        val = dic[key]
+    elif "@{}".format(key) in dic and is_literal_value is False:
+        val = dic["@{}".format(key)]
+    else:
+        if type(dic) is OrderedDict:
+            dic = dict(dic)
+        raise ValueError("Could Not Extract Key \"{}\" From {}".format(key, dic))
+
+    if return_type is None:
+        return val
+    return return_type(val)
 
 
 def rect_a_touch_b(rect_a: tuple, rect_b: tuple):

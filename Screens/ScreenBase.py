@@ -20,12 +20,3 @@ class ScreenBase:
         All of the graphical updates should go here
         """
         pass
-
-    def process_input(self, event, pressed_keys):
-        """
-        Processes keyboard input
-        :param event: The pygame events
-        :param pressed_keys: The list of the states of each key. Indexes are based on ASCII values. Ex. 101=e, so pressed_keys[101] = state of the 'e' key
-        :return: 
-        """
-        pass

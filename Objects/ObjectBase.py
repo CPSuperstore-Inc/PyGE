@@ -5,7 +5,7 @@ import matplotlib.path as mpl_path
 import numpy as np
 
 from SideScroller.Misc.Ticker import Ticker
-from SideScroller.utils import get_mandatory, rect_a_touch_b, scale_coords, get_optional
+from SideScroller.utils import get_mandatory, rect_a_touch_b, scale_coords, get_optional, point_in_rect
 from SideScroller.DisplayMethods.Color import Color, DisplayBase
 from SideScroller.Globals.GlobalVariable import get_sys_var
 
@@ -157,7 +157,7 @@ class ObjectBase:
         if y is None:
             y = self.y
 
-        if type(item) is DisplayBase:
+        if isinstance(item, DisplayBase):
             item.draw(x, y)
         elif type(item) is pygame.Surface:
             self.screen.blit(item, (x, y))
@@ -180,6 +180,9 @@ class ObjectBase:
         :return: the newly created room object
         """
         return self.parent.add_room(name)
+
+    def is_touching_mouse(self):
+        return point_in_rect(pygame.mouse.get_pos(), self.rect)
 
     def delete_room(self, name):
         self.parent.delete_room(name)

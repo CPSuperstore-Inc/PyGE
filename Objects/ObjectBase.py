@@ -1,9 +1,10 @@
 import typing
-
+import math
 import pygame
 import matplotlib.path as mpl_path
 import numpy as np
 
+import SideScroller.ASQL
 from SideScroller.Misc.Ticker import Ticker
 from SideScroller.utils import get_mandatory, rect_a_touch_b, scale_coords, get_optional, point_in_rect
 from SideScroller.DisplayMethods.Color import Color, DisplayBase
@@ -22,6 +23,8 @@ class ObjectBase:
         self.screen = screen
         self.args = args
         self.parent = parent
+
+        self.angle = 0
 
         self.x = get_mandatory(args, "@x", int)
         self.y = get_mandatory(args, "@y", int)
@@ -53,6 +56,7 @@ class ObjectBase:
         self.debug_color = get_sys_var("debug-color")
 
         self.siblings = self.parent.props.array
+        self.sibling_asql = self.parent.props       # type: SideScroller.ASQL.ASQL
 
         self.oncreate()
 
@@ -109,6 +113,13 @@ class ObjectBase:
         Returns a dictionary representation of the rooms in memory
         """
         return self.parent.parent.rooms
+
+    @property
+    def object_type(self):
+        """
+        Returns the object type as a string (Ex. "Text" or "Cube") 
+        """
+        return self.__class__.__name__
 
     def set_metadata(self, values:dict):
         """
@@ -182,12 +193,26 @@ class ObjectBase:
         return self.parent.add_room(name)
 
     def is_touching_mouse(self):
+        """
+        Checks if this object is touching the mouse cursor
+        :return: if the mouse is touching this object
+        """
         return point_in_rect(pygame.mouse.get_pos(), self.rect)
 
     def delete_room(self, name):
+        """
+        Deletes the room with the specified name
+        :param name: the name of the room to delete
+        """
         self.parent.delete_room(name)
 
     def rename_room(self, old, new):
+        """
+        Renames a room
+        :param old: the name of the room to change 
+        :param new: the new name of the room
+        :return: 
+        """
         self.parent.rename_room(old, new)
 
     def system_onroomenter(self):
@@ -229,7 +254,7 @@ class ObjectBase:
         :param class_type: The name of the class to add
         :param args: A dictionary of arguments to send to the new object (The '@' sign is not a mandatory prefix for each object)
         :param x: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place 
-        :param y: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place 
+        :param y: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place
         :return: The newly created object
         """
         return self.parent.add_object(class_type, args, x, y)
@@ -353,6 +378,49 @@ class ObjectBase:
         temp.blit(source, (0, 0))
         temp.set_alpha(opacity)
         self.screen.blit(temp, (x, y))
+
+    def rotate_object(self, surface: pygame.Surface, angle=None):
+        """
+        This function returns a rotated version of the provided surface
+        NOTE: DO NOT rotate a surface which has already been rotated! It does not end well...
+        :param surface: the surface to rotate
+        :param angle: the angle to set the rotation to. If not defined, this object's angle will be used
+        :return: the rotated surface
+        """
+        if angle is None:
+            angle = self.angle
+        orig_rect = surface.get_rect()
+        rot_image = pygame.transform.rotate(surface, angle)
+        rot_rect = orig_rect.copy()
+        rot_rect.center = rot_image.get_rect().center
+        rot_image = rot_image.subsurface(rot_rect).copy()
+        return rot_image
+
+    def move_angle(self, velocity, angle=None):
+        """
+        Moves this object along a specified angle
+        :param velocity: the velocity to move the object
+        :param angle: The angle to move the object. If not specified, the object's angle will be used
+        """
+        if angle is None:
+            angle = self.angle
+        self.move(
+            int(velocity * math.cos(angle * (math.pi / 180))),
+            int(velocity * math.sin(angle * (math.pi / 180)))
+        )
+
+    def move_angle_time(self, velocity, angle=None):
+        """
+        Moves this object along a specified angle using time-based movement
+        :param velocity: the velocity to move the object
+        :param angle: The angle to move the object. If not specified, the object's angle will be used
+        """
+        if angle is None:
+            angle = self.angle
+        self.move(
+            int(velocity * math.cos(angle * (math.pi / 180)) * self.time_delta),
+            int(velocity * math.sin(angle * (math.pi / 180)) * self.time_delta)
+        )
 
     def update(self, pressed_keys):
         """

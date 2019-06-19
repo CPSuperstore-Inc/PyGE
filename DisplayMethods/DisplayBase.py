@@ -4,6 +4,7 @@ class DisplayBase:
         This is the class in which ALL display methods MUST inherit from (takes no arguements)
         """
         self.w, self.h = (0, 0)
+        self.angle = 0
 
     def draw(self, x, y):
         """

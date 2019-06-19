@@ -210,3 +210,12 @@ def center_on_screen(obj, screen):
     _, _, ow, oh = obj.rect
 
     return (sw / 2) - (ow / 2), (sh / 2) - (oh / 2)
+
+
+def get_surface_center(surf: pygame.Surface):
+    """
+    Calculates the center point of a surface
+    :param surf: the surface to calculate from
+    :return: the center point as a tuple (x, y)
+    """
+    return surf.get_width() / 2, surf.get_height() / 2

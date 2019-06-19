@@ -1,6 +1,7 @@
 import pygame
 from SideScroller.DisplayMethods.DisplayBase import DisplayBase
 from SideScroller.Globals.Cache import get_image
+import math
 
 
 class Image(DisplayBase):

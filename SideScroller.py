@@ -67,3 +67,10 @@ class SideScroller:
         self.rooms[new] = self.rooms[old]
         self.rooms[new].name = new
         self.delete_room(old)
+
+    def reload_room(self, name:str):
+        self.rooms[name].reload_room()
+
+    def attempt_quit(self):
+        if self.room.quit_action():
+            quit()

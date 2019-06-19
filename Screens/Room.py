@@ -24,15 +24,19 @@ class Room(ScreenBase):
         self.props = ASQL()
         self.custom_objects = custom_objects
         self.parent = parent
+        self.data = data
+        self.load_room()
 
-        for item in data:
-            if type(data[item]) is list:
-                for count in range(len(data[item])):
+    def load_room(self):
+        self.props = ASQL()
+        for item in self.data:
+            if type(self.data[item]) is list:
+                for count in range(len(self.data[item])):
                     if not item.startswith("@"):
                         found = False
                         for c in self.custom_objects:
                             if c.__name__ == item:
-                                self.props.append(c(self.screen, data[item][count], self))
+                                self.props.append(c(self.screen, self.data[item][count], self))
                                 found = True
                                 break
                         if found is False:
@@ -42,9 +46,9 @@ class Room(ScreenBase):
                     found = False
                     for c in self.custom_objects:
                         if c.__name__ == item:
-                            if data[item] is None:
-                                data[item] = {}
-                            self.props.append(c(self.screen, data[item], self))
+                            if self.data[item] is None:
+                                self.data[item] = {}
+                            self.props.append(c(self.screen, self.data[item], self))
                             found = True
                             break
                     if found is False:
@@ -174,3 +178,12 @@ class Room(ScreenBase):
 
     def rename_room(self, old, new):
         self.parent.rename_room(old, new)
+
+    def reload_room(self, name:str=None):
+        if name is None:
+            self.load_room()
+        else:
+            self.parent.reload_room(name)
+
+    def attempt_quit(self):
+        self.parent.attempt_quit()

@@ -26,17 +26,25 @@ class ObjectBase:
 
         self.angle = 0
 
-        self.x = get_mandatory(args, "@x", int)
-        self.y = get_mandatory(args, "@y", int)
+        self.should_center_width = get_mandatory(args, "@x", str) == "c"
+        self.should_center_height = get_mandatory(args, "@y", str) == "c"
 
         self.locked = get_optional(args, "@locked", "false")
-
-        self.x, self.y = scale_coords((self.x, self.y))
 
         self.screen_w, self.screen_h = self.screen.get_size()
 
         self.display = Color(screen, (255, 0, 255), 10, 10)
         self.w, self.h = self.display.get_size()
+
+        if self.should_center_width:
+            self.x = self.center_width()
+        else:
+            self.x = get_mandatory(args, "@x", int)
+
+        if self.should_center_height:
+            self.y = self.center_height()
+        else:
+            self.y = get_mandatory(args, "@y", int)
 
         self.on_screen_cache = True
         self.on_mouse_over_cache = False
@@ -56,9 +64,26 @@ class ObjectBase:
         self.debug_color = get_sys_var("debug-color")
 
         self.siblings = self.parent.props.array
-        self.sibling_asql = self.parent.props       # type: SideScroller.ASQL.ASQL
 
         self.oncreate()
+
+    def center_width(self):
+        self.x = (self.screen.get_width() / 2) - (self.w / 2)
+        return self.x
+
+    def center_height(self):
+        self.y = (self.screen.get_height() / 2) - (self.h / 2)
+        return self.y
+
+    def set_width(self, w:int):
+        self.w = w
+        if self.should_center_width:
+            self.center_width()
+
+    def set_height(self, h:int):
+        self.h = h
+        if self.should_center_height:
+            self.center_height()
 
     def set_display_method(self, method:'DisplayBase'):
         """
@@ -116,9 +141,6 @@ class ObjectBase:
 
     @property
     def object_type(self):
-        """
-        Returns the object type as a string (Ex. "Text" or "Cube") 
-        """
         return self.__class__.__name__
 
     def set_metadata(self, values:dict):
@@ -193,26 +215,12 @@ class ObjectBase:
         return self.parent.add_room(name)
 
     def is_touching_mouse(self):
-        """
-        Checks if this object is touching the mouse cursor
-        :return: if the mouse is touching this object
-        """
         return point_in_rect(pygame.mouse.get_pos(), self.rect)
 
     def delete_room(self, name):
-        """
-        Deletes the room with the specified name
-        :param name: the name of the room to delete
-        """
         self.parent.delete_room(name)
 
     def rename_room(self, old, new):
-        """
-        Renames a room
-        :param old: the name of the room to change 
-        :param new: the new name of the room
-        :return: 
-        """
         self.parent.rename_room(old, new)
 
     def system_onroomenter(self):
@@ -255,6 +263,7 @@ class ObjectBase:
         :param args: A dictionary of arguments to send to the new object (The '@' sign is not a mandatory prefix for each object)
         :param x: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place 
         :param y: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place
+        :param index: The index to insert into (Use -1 for last (Default), and 0 for first)
         :return: The newly created object
         """
         return self.parent.add_object(class_type, args, x, y)
@@ -379,18 +388,11 @@ class ObjectBase:
         temp.set_alpha(opacity)
         self.screen.blit(temp, (x, y))
 
-    def rotate_object(self, surface: pygame.Surface, angle=None):
-        """
-        This function returns a rotated version of the provided surface
-        NOTE: DO NOT rotate a surface which has already been rotated! It does not end well...
-        :param surface: the surface to rotate
-        :param angle: the angle to set the rotation to. If not defined, this object's angle will be used
-        :return: the rotated surface
-        """
+    def rotate_object(self, image: pygame.Surface, angle=None):
         if angle is None:
             angle = self.angle
-        orig_rect = surface.get_rect()
-        rot_image = pygame.transform.rotate(surface, angle)
+        orig_rect = image.get_rect()
+        rot_image = pygame.transform.rotate(image, angle)
         rot_rect = orig_rect.copy()
         rot_rect.center = rot_image.get_rect().center
         rot_image = rot_image.subsurface(rot_rect).copy()
@@ -421,6 +423,12 @@ class ObjectBase:
             int(velocity * math.cos(angle * (math.pi / 180)) * self.time_delta),
             int(velocity * math.sin(angle * (math.pi / 180)) * self.time_delta)
         )
+
+    def reload_room(self, name:str=None):
+        self.parent.reload_room(name)
+
+    def attempt_quit(self):
+        self.parent.attempt_quit()
 
     def update(self, pressed_keys):
         """

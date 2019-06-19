@@ -68,19 +68,37 @@ class ObjectBase:
         self.oncreate()
 
     def center_width(self):
+        """
+        Forces the object to the center of the screen along the x axis
+        :return: the new x position
+        """
         self.x = (self.screen.get_width() / 2) - (self.w / 2)
         return self.x
 
     def center_height(self):
+        """
+        Forces the object to the center of the screen along the y axis
+        :return: the new y position
+        """
         self.y = (self.screen.get_height() / 2) - (self.h / 2)
         return self.y
 
     def set_width(self, w:int):
+        """
+        Sets this object's width
+        We strongly recomend you use this method, and not set the value directly, as this allows for calculation updates
+        :param w: the new width
+        """
         self.w = w
         if self.should_center_width:
             self.center_width()
 
     def set_height(self, h:int):
+        """
+        Sets this object's height
+        We strongly recomend you use this method, and not set the value directly, as this allows for calculation updates
+        :param h: the new height
+        """
         self.h = h
         if self.should_center_height:
             self.center_height()
@@ -141,6 +159,9 @@ class ObjectBase:
 
     @property
     def object_type(self):
+        """
+        Gets this object's class name as a string
+        """
         return self.__class__.__name__
 
     def set_metadata(self, values:dict):
@@ -215,12 +236,24 @@ class ObjectBase:
         return self.parent.add_room(name)
 
     def is_touching_mouse(self):
+        """
+        Returns if this object is touching the mouse cursor
+        """
         return point_in_rect(pygame.mouse.get_pos(), self.rect)
 
     def delete_room(self, name):
+        """
+        Deletes the room with the specified name
+        :param name: the name of the room to delete
+        """
         self.parent.delete_room(name)
 
     def rename_room(self, old, new):
+        """
+        Renames a room
+        :param old: the current name of the room
+        :param new: the new name of the room 
+        """
         self.parent.rename_room(old, new)
 
     def system_onroomenter(self):
@@ -263,7 +296,6 @@ class ObjectBase:
         :param args: A dictionary of arguments to send to the new object (The '@' sign is not a mandatory prefix for each object)
         :param x: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place 
         :param y: The x position of the object (if left blank, the x position specified in the 'args' dict will be used in place
-        :param index: The index to insert into (Use -1 for last (Default), and 0 for first)
         :return: The newly created object
         """
         return self.parent.add_object(class_type, args, x, y)
@@ -388,11 +420,17 @@ class ObjectBase:
         temp.set_alpha(opacity)
         self.screen.blit(temp, (x, y))
 
-    def rotate_object(self, image: pygame.Surface, angle=None):
+    def rotate_object(self, surf: pygame.Surface, angle=None):
+        """
+        Rotates and returns a surface relative to the surface's center
+        :param surf: the surface to rotate
+        :param angle: the angle to rotate by. Leave blank to use this object's angle
+        :return: 
+        """
         if angle is None:
             angle = self.angle
-        orig_rect = image.get_rect()
-        rot_image = pygame.transform.rotate(image, angle)
+        orig_rect = surf.get_rect()
+        rot_image = pygame.transform.rotate(surf, angle)
         rot_rect = orig_rect.copy()
         rot_rect.center = rot_image.get_rect().center
         rot_image = rot_image.subsurface(rot_rect).copy()
@@ -425,9 +463,18 @@ class ObjectBase:
         )
 
     def reload_room(self, name:str=None):
+        """
+        Reloads the specified room
+        WARNING: DO NOT run this method in the "oncreate", or "onroomenter" events to avoid recursion
+        :param name: the name of the room to reload (if blank, the room containing this object will be reloaded)
+        """
         self.parent.reload_room(name)
 
     def attempt_quit(self):
+        """
+        Attempt to quit the game. This will run the "onquit" event for each object.
+        If "False" is returned by any object's "onquit" event, the program will not be quit
+        """
         self.parent.attempt_quit()
 
     def update(self, pressed_keys):
@@ -529,7 +576,6 @@ class ObjectBase:
         :param key: the character code of the key presed (ex. e=101)
         :param modifier: a bitmask representation of the keyboard modifiers used. Use "SideScroller.utils.deconstruct_modifier_bitmask" to convert to a list of modifiers
         :param scancode: The platform-specific key code (WARNING: Can be different between different keyboards)
-        :return: 
         """
         pass
 

@@ -49,7 +49,7 @@ def convert_color(color:str):
                 return tuple(int(color.strip("#")[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def get_optional(dic: dict, key: str, default, return_type:type=None, is_literal_value=False):
+def get_optional(dic: dict, key: str, default, return_type:type=None, is_literal_value=False, blank_means_unset=False):
     """
     Returns either the value in a dictionary, or a default value specified if the value is not in the dictionary
     This is a very usefull tool when working with "args" from the XML map
@@ -58,6 +58,7 @@ def get_optional(dic: dict, key: str, default, return_type:type=None, is_literal
     :param default: The value to return if the value does not exits
     :param return_type: The datatype to cast the result to (regardless if it is found or not)
     :param is_literal_value: If the key specified is the literal key (True), or if it should try both the value, and the value preceded by the  @ sign
+    :param blank_means_unset: If a blank value is found (""), treat it as unset. Default is False
     :return: Either the value in the dictionary, or the default value
     """
     if key in dic:
@@ -67,8 +68,13 @@ def get_optional(dic: dict, key: str, default, return_type:type=None, is_literal
     else:
         val = default
 
+    if blank_means_unset and val == "":
+        return default
+
     if return_type is not None:
         val = return_type(val)
+    if return_type is int:
+        val = round(float(val), 0)
     return val
 
 
@@ -93,6 +99,8 @@ def get_mandatory(dic: dict, key: str, return_type:type=None, is_literal_value=F
 
     if return_type is None:
         return val
+    if return_type is int:
+        val = round(float(val), 0)
     return return_type(val)
 
 

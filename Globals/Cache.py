@@ -3,6 +3,7 @@ import pygame
 import os
 
 from SideScroller.Misc.SpriteSheet import SpriteSheet
+from SideScroller.Misc.Font import Font
 from SideScroller.utils import scale_image
 
 # cache dictionaries
@@ -11,6 +12,7 @@ spritesheets = {}   # spritesheet cache
 sounds = {}         # sound cache
 font = {}
 image_paths = {}
+sound_paths = {}
 
 
 DEFAULT_IMAGE = None            # The default image (MUST BE STORED IN THE CACHE!)
@@ -154,7 +156,7 @@ def get_spritesheet(name):
 def get_spritesheet_cache_list():
     """
     Formats the sprite sheets in a list format. Each item in the list is a dictionary object
-    :return: the list of dictionaries describing each image in the cache
+    :return: the list of dictionaries describing each spritesheet in the cache
     """
     out = []
     for name, ss in spritesheets.items():   #type: str, SpriteSheet
@@ -170,6 +172,15 @@ def get_spritesheet_cache_list():
     return out
 
 
+def clear_spritesheet_cache():
+    """
+    Clears the entire spritesheet cache
+    (WARNING: Don't forget to add spritesheets back to the cache before referencing them)
+    """
+    global spritesheets
+    spritesheets = {}
+
+
 def set_sound(name:str, path:str, volume:float=1):
     """
     Loads a sound file into the cache based on the name
@@ -181,6 +192,7 @@ def set_sound(name:str, path:str, volume:float=1):
         raise FileNotFoundError("The File You Have Requested '{}' Could Not Be Located. Please Check The Path, And Ensure The File Exists.".format(path))
     sounds[name] = pygame.mixer.Sound(path)
     sounds[name].set_volume(volume)
+    sound_paths[name] = path
 
 
 def get_sound(name):
@@ -192,6 +204,32 @@ def get_sound(name):
     return sounds[name]
 
 
+def clear_sound_cache():
+    """
+    Clears the entire sound cache
+    (WARNING: Don't forget to add sounds back to the cache before referencing them)
+    """
+    global sounds
+    global sound_paths
+    sounds = {}
+    sound_paths = {}
+
+
+def get_sound_cache_list():
+    """
+    Formats the sounds in a list format. Each item in the list is a dictionary object
+    :return: the list of dictionaries describing each sound in the cache
+    """
+    out = []
+    for name, s in sounds.items():   #type: str, Sound
+        out.append({
+            "name": name,
+            "path": sound_paths[name],
+            "volume": s.get_volume()
+        })
+    return out
+
+
 def set_font(name:str, path:str, size:int, bold:bool=False, italic:bool=False):
     """
     Loads a font into the font cache based on the name
@@ -201,14 +239,7 @@ def set_font(name:str, path:str, size:int, bold:bool=False, italic:bool=False):
     :param bold: if the font should be bolded (default is False)
     :param italic: if the font should be italicised (default is False)
     """
-    if not os.path.isfile(path):
-        print("WARNING: Font File '{}' Could Not Be Located!".format(path))
-        print("System Font Will Be Used In Place. This will cause a fatal error when project is exported")
-        f = pygame.font.SysFont(path, size, bold=bold, italic=italic)
-    else:
-        f = pygame.font.Font(path, size, bold=bold, italic=italic)
-
-    font[name] = f
+    font[name] = Font(path, size, bold=bold, italic=italic)
 
 
 def get_font(name):
@@ -218,3 +249,28 @@ def get_font(name):
     :return: the font assigned to the provided name
     """
     return font[name]
+
+
+def clear_font_cache():
+    """
+    Clears the entire font cache
+    (WARNING: Don't forget to add fonts back to the cache before referencing them)
+    """
+    global font
+    font = {}
+
+
+def get_font_cache_list():
+    """
+    Formats the fonts in a list format. Each item in the list is a dictionary object
+    :return: the list of dictionaries describing each font in the cache
+    """
+    out = []
+    for name, f in font.items():   #type: str, Font
+        out.append({
+            "name": name,
+            "path": f.path,
+            "size": f.size
+        })
+    return out
+

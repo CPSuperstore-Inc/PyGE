@@ -13,11 +13,22 @@ class Text(ObjectBase):
         self.font = get_font(self.get_mandatory_arguement("font", str))     # type: pygame.font.Font
 
         self.text = self.get_mandatory_arguement("text", str)
-        self.antialiasing = bool(self.get_optional_arguement("antialiasing", 1, int))
-        self.color = utils.convert_color(self.get_optional_arguement("color", "White", str))
+        self.antialiasing = bool(self.get_optional_arguement("antialiasing", 1, int, blank_means_unset=True))
+        self.color = utils.convert_color(self.get_optional_arguement("color", "White", str, blank_means_unset=True))
 
         self.text_object = None
         self.rebuild_text_object()
+
+    @property
+    def metadata(self):
+        return {
+            "x": self.x,
+            "y": self.y,
+            "font": self.font,
+            "text": self.text,
+            "antialiasing": self.antialiasing,
+            "color": self.color
+        }
 
     def set_text(self, text:str):
         self.text = text

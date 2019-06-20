@@ -1,14 +1,14 @@
-import typing
 import math
-import pygame
+import typing
+
 import matplotlib.path as mpl_path
 import numpy as np
+import pygame
 
-import SideScroller.ASQL
-from SideScroller.Misc.Ticker import Ticker
-from SideScroller.utils import get_mandatory, rect_a_touch_b, scale_coords, get_optional, point_in_rect
 from SideScroller.DisplayMethods.Color import Color, DisplayBase
 from SideScroller.Globals.GlobalVariable import get_sys_var
+from SideScroller.Misc.Ticker import Ticker
+from SideScroller.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect
 
 
 class ObjectBase:
@@ -174,16 +174,17 @@ class ObjectBase:
         self.__init__(self.screen, values, self.parent)
         self.oncreate()
 
-    def get_optional_arguement(self, key: str, default, return_type:type=None, is_literal_value=False):
+    def get_optional_arguement(self, key: str, default, return_type:type=None, is_literal_value=False, blank_means_unset=False):
         """
         Returns either the value in a dictionary, or a default value specified if the value is not in the dictionary
         :param key: The key to look for in the arguement dictionary
         :param default: The value to return if the value does not exits
         :param return_type: The datatype to cast the result to (regardless if it is found or not)
         :param is_literal_value: If the key specified is the literal key (True), or if it should try both the value, and the value preceded by the  @ sign
+        :param blank_means_unset: If a blank value is found (""), treat it as unset. Default is False
         :return: Either the value in the dictionary, or the default value
         """
-        return get_optional(self.args, key, default, return_type=return_type, is_literal_value=is_literal_value)
+        return get_optional(self.args, key, default, return_type=return_type, is_literal_value=is_literal_value, blank_means_unset=blank_means_unset)
 
 
     def get_mandatory_arguement(self, key: str, return_type:type=None, is_literal_value=False):
@@ -375,6 +376,20 @@ class ObjectBase:
                 if rect_a_touch_b(self.rect, obj.rect):
                     return True
         return False
+
+    def get_touching_type(self, model:str):
+        """
+        returns all of the objects which are of the specified model, and are touching this object
+        NOTE: Will NOT fire the "oncollide" event
+        :param model: The name of the type/class to check against
+        :return: the collided objects
+        """
+        touching = []
+        for obj in self.parent.props.array:
+            if obj.model_type == model and obj != self:
+                if rect_a_touch_b(self.rect, obj.rect):
+                    touching.append(obj)
+        return touching
 
     def get_all_type(self, model:str):
         """

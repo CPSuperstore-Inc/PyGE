@@ -5,10 +5,10 @@ import matplotlib.path as mpl_path
 import numpy as np
 import pygame
 
-from SideScroller.DisplayMethods.Color import Color, DisplayBase
-from SideScroller.Globals.GlobalVariable import get_sys_var
-from SideScroller.Misc.Ticker import Ticker
-from SideScroller.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect
+from PyGE.DisplayMethods.Color import Color, DisplayBase
+from PyGE.Globals.GlobalVariable import get_sys_var
+from PyGE.Misc.Ticker import Ticker
+from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect
 
 
 class ObjectBase:

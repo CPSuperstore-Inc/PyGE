@@ -4,11 +4,11 @@ import typing
 
 import pygame
 
-from SideScroller.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet, set_font
-from SideScroller.Globals.GlobalVariable import set_var, set_sys_var
-from SideScroller.Misc.Computer import get_monitor_resolution
-from SideScroller.SideScroller import SideScroller
-from SideScroller.utils import get_optional
+from PyGE.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet, set_font
+from PyGE.Globals.GlobalVariable import set_var, set_sys_var
+from PyGE.Misc.Computer import get_monitor_resolution
+from PyGE.SideScroller import SideScroller
+from PyGE.utils import get_optional
 
 
 def side_scroller(

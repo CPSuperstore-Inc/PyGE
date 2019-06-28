@@ -1,13 +1,13 @@
-from SideScroller.Objects.ObjectBase import ObjectBase
-import SideScroller.utils as utils
+from PyGE.Objects.ObjectBase import ObjectBase
+from PyGE.utils import *
 import pygame
 
 
 class Cube(ObjectBase):
     def __init__(self, screen:pygame.Surface, args: dict, parent):
         ObjectBase.__init__(self, screen, args, parent)
-        self.full_w = utils.get_mandatory(args, "@w", int)
-        self.full_h = utils.get_mandatory(args, "@h", int)
+        self.full_w = get_mandatory(args, "@w", int)
+        self.full_h = get_mandatory(args, "@h", int)
         self.w = self.full_w
         self.h = self.full_h
         self.z = 0

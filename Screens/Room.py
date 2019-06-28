@@ -2,13 +2,13 @@ import typing
 
 import pygame
 
-from SideScroller.Screens.ScreenBase import ScreenBase
-from SideScroller.ASQL import ASQL
-from SideScroller.utils import get_mandatory, point_in_rect
-from SideScroller.Objects.ObjectBase import ObjectBase
-from SideScroller.utils import rect_a_touch_b
-from SideScroller.Globals.GlobalVariable import get_sys_var
-from SideScroller.Errors import ObjectNotDeclaredException
+from PyGE.Screens.ScreenBase import ScreenBase
+from PyGE.ASQL import ASQL
+from PyGE.utils import get_mandatory, point_in_rect
+from PyGE.Objects.ObjectBase import ObjectBase
+from PyGE.utils import rect_a_touch_b
+from PyGE.Globals.GlobalVariable import get_sys_var
+from PyGE.Errors import ObjectNotDeclaredException
 
 HALL = 0
 

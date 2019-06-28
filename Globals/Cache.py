@@ -2,9 +2,9 @@ import pygame
 
 import os
 
-from SideScroller.Misc.SpriteSheet import SpriteSheet
-from SideScroller.Misc.Font import Font
-from SideScroller.utils import scale_image
+from PyGE.Misc.SpriteSheet import SpriteSheet
+from PyGE.Misc.Font import Font
+from PyGE.utils import scale_image
 
 # cache dictionaries
 images = {}         # image cache

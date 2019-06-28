@@ -1,9 +1,9 @@
 import pygame
 
-from SideScroller.Objects.ObjectBase import ObjectBase
-from SideScroller.Screens.Room import Room
-from SideScroller.Globals.Cache import get_font
-import SideScroller.utils as utils
+from PyGE.Objects.ObjectBase import ObjectBase
+from PyGE.Screens.Room import Room
+from PyGE.Globals.Cache import get_font
+import PyGE.utils as utils
 
 
 class Text(ObjectBase):

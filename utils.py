@@ -1,5 +1,5 @@
 import pygame
-import SideScroller.Globals.Constants as Constants
+import PyGE.Globals.Constants as Constants
 from xmltodict import OrderedDict
 
 def convert_color(color:str):

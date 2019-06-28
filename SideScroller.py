@@ -3,9 +3,9 @@ import typing
 import pygame
 import xmltodict
 
-from SideScroller.Screens.Room import Room
-from SideScroller.Errors import RoomNotDeclaredException, InvalidXMLException
-from SideScroller.Globals.Objects import PREMADE_OBJECTS
+from PyGE.Screens.Room import Room
+from PyGE.Errors import RoomNotDeclaredException, InvalidXMLException
+from PyGE.Globals.Objects import PREMADE_OBJECTS
 
 pygame.init()
 

@@ -1,5 +1,5 @@
 import pygame
-from SideScroller.DisplayMethods.DisplayBase import DisplayBase
+from PyGE.DisplayMethods.DisplayBase import DisplayBase
 
 
 class Color(DisplayBase):

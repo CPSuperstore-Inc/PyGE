@@ -1,6 +1,6 @@
 import pygame
-from SideScroller.DisplayMethods.DisplayBase import DisplayBase
-from SideScroller.Globals.Cache import get_spritesheet
+from PyGE.DisplayMethods.DisplayBase import DisplayBase
+from PyGE.Globals.Cache import get_spritesheet
 
 
 class SpriteSheet(DisplayBase):

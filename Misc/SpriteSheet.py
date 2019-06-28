@@ -1,7 +1,7 @@
 import pygame
 from time import time
 
-from SideScroller.utils import scale_image
+from PyGE.utils import scale_image
 
 
 class SpriteSheet:

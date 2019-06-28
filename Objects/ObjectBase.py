@@ -492,6 +492,56 @@ class ObjectBase:
         """
         self.parent.attempt_quit()
 
+    def reproduce(self, screen:pygame.Surface=None, args:dict=None, parent=None, add_to_room:bool=True):
+        """
+        Reproduces this object
+        :param screen: the screen to draw this object to. If left blank, this object's screen will be used
+        :param args: the arguements to use. If left blank, this object's arguements will be used
+        :param parent: the parent "Room" object to add this object to. If left blank, this object's room will be used
+        :param add_to_room: if the object should automatically be added to the specified room
+        :return: the new object
+        """
+        if screen is None:
+            screen = self.screen
+
+        if args is None:
+            args = self.args
+
+        if parent is None:
+            parent = parent
+
+        obj = self.__class__(screen, args, parent)
+        if add_to_room:
+            parent.add_created_object(obj)
+        return obj
+
+    def broadcast_message(self, message, self_included=False):
+        """
+        Sends the specified message to ALL objects in the same room as this one
+        :param message: the message to send out
+        :param self_included: if the message should be setnt out to this object as well. (Default is False)
+        """
+        destanations = self.siblings[:]
+        if self_included is False:
+            destanations.remove(self)
+        self.multicast_message(message, destanations)
+
+    def multicast_message(self, message, destanations: 'typing.List[ObjectBase]'):
+        """
+        Sends the specifeid message to the objects in the specified list
+        :param message: the message to send
+        :param destanations: the objects to send the message to
+        """
+        self.parent.send_message(message, destanations)
+
+    def unicast_message(self, message, destanation:'ObjectBase'):
+        """
+        Sends the specified message to the one single object which has been specified
+        :param message: the message to send
+        :param destanation: the single object to send the message to
+        """
+        self.multicast_message(message, [destanation])
+
     def update(self, pressed_keys):
         """
         Overridable method run once per frame. This is for all of the logic the object requires
@@ -656,5 +706,12 @@ class ObjectBase:
         """
         Overridable event run each time this object collides with another
         :param obj: the object which this object has collided with
+        """
+        pass
+
+    def onmessagerecieve(self, message:str):
+        """
+        Overridable event run when this object recieves a message
+        :param message: the message recieved
         """
         pass

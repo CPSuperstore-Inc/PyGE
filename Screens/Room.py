@@ -170,6 +170,13 @@ class Room(ScreenBase):
                 self.props.append(obj)
                 return obj
 
+    def add_created_object(self, o):
+        self.props.append(o)
+
+    def send_message(self, message, destanations: 'typing.List[ObjectBase]'):
+        for d in destanations:
+            d.onmessagerecieve(message)
+
     def add_room(self, name):
         return self.parent.add_room(name)
 

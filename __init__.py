@@ -5,7 +5,12 @@ from SideScroller.Errors import *
 from SideScroller.SideScroller import *
 from SideScroller.utils import *
 
-from SideScroller.DisplayMethods.Color import Color
-from SideScroller.DisplayMethods.DisplayBase import DisplayBase
-from SideScroller.DisplayMethods.Image import Image
-from SideScroller.DisplayMethods.SpriteSheet import SpriteSheet
+from SideScroller.DisplayMethods.Color import *
+from SideScroller.DisplayMethods.DisplayBase import *
+from SideScroller.DisplayMethods.Image import *
+from SideScroller.DisplayMethods.SpriteSheet import *
+
+from SideScroller.Globals.Cache import *
+from SideScroller.Globals.Constants import *
+from SideScroller.Globals.GlobalVariable import *
+from SideScroller.Globals.Objects import *

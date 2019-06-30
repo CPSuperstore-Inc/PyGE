@@ -10,7 +10,7 @@ from PyGE.Globals.Objects import PREMADE_OBJECTS
 pygame.init()
 
 
-class SideScroller:
+class PyGE:
     def __init__(self, screen: pygame.Surface, level_data:str, starting_room: str, custom_objects:typing.List):
         """
         This is the most important object in the entire system!

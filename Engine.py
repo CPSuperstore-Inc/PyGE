@@ -7,7 +7,7 @@ import pygame
 from PyGE.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet, set_font
 from PyGE.Globals.GlobalVariable import set_var, set_sys_var
 from PyGE.Misc.Computer import get_monitor_resolution
-from PyGE.SideScroller import SideScroller
+from PyGE.PyGEObject import PyGE
 from PyGE.utils import get_optional
 
 
@@ -48,6 +48,10 @@ def side_scroller(
     """
 
     tmp = []
+
+    if custom_objects is None:
+        custom_objects = []
+
     for sublist in custom_objects:
         if type(sublist) is list:
             for item in sublist:
@@ -152,7 +156,7 @@ def side_scroller(
     set_default_spritesheet(default_spritesheet)
 
     clock = pygame.time.Clock()
-    class_ref = SideScroller
+    class_ref = PyGE
     if alt_side_scroller is not None:
         class_ref = alt_side_scroller
     game = class_ref(screen, xml, start_room, custom_objects)

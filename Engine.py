@@ -11,8 +11,7 @@ from PyGE.PyGEObject import PyGE
 from PyGE.utils import get_optional
 
 
-def side_scroller(
-        xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, development_screen_size:tuple=None, refresh_rate:int=60,
+def pyge_application(xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, development_screen_size:tuple=None, refresh_rate:int=60,
         caption:str= "Python Side Scroller Engine", icon:str=None, loading_screen:callable=None, min_loading_time:int=0,
         custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
         debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True, default_image:str=None,
@@ -47,6 +46,20 @@ def side_scroller(
     :param background_color: The color of the screen's background (empty space where nothing is drawn). The default is black (0, 0, 0)
     """
 
+    return side_scroller(xml, start_room, images, sprite_sheets, sounds, font, development_screen_size, refresh_rate,
+        caption, icon, loading_screen, min_loading_time,
+        custom_objects, enable_alt_f4, initial_variables, fullscreen,
+        debug, debug_color, auto_scale, default_image,
+        default_spritesheet, post_load, alt_side_scroller, background_color)
+
+
+def side_scroller(
+        xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, development_screen_size:tuple=None, refresh_rate:int=60,
+        caption:str= "Python Side Scroller Engine", icon:str=None, loading_screen:callable=None, min_loading_time:int=0,
+        custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
+        debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True, default_image:str=None,
+        default_spritesheet:str=None, post_load:callable=None, alt_side_scroller=None, background_color:tuple=(0, 0, 0)
+):
     tmp = []
 
     if custom_objects is None:

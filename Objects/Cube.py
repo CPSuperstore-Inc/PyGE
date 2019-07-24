@@ -1,5 +1,4 @@
-from PyGE.Objects.ObjectBase import ObjectBase
-from PyGE.utils import *
+from PyGE import *
 import pygame
 
 

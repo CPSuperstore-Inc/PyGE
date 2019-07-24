@@ -1,4 +1,5 @@
-from PyGE import *
+from .ObjectBase import ObjectBase
+from ..utils import get_mandatory
 import pygame
 
 

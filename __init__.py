@@ -24,11 +24,15 @@ from PyGE.Misc.SpriteSheet import *
 from PyGE.Misc.Ticker import *
 
 from PyGE.Objects.Cube import *
-from PyGE.Objects.ObjectBase import ObjectBase
+from PyGE.Objects.ObjectBase import *
+from PyGE.Objects.ObjectBase3D import *
 from PyGE.Objects.Text import *
 
 from PyGE.Screens.Room import *
 from PyGE.Screens.ScreenBase import *
 
-
-from pygame import Surface
+from PyGE.ThreeD.Node import *
+from PyGE.ThreeD.Verticy import *
+from PyGE.ThreeD.Face import *
+from PyGE.ThreeD.WireFrame import *
+from PyGE.ThreeD.Transformations import *

@@ -8,7 +8,7 @@ import pygame
 from PyGE.DisplayMethods.Color import Color, DisplayBase
 from PyGE.Globals.GlobalVariable import get_sys_var
 from PyGE.Misc.Ticker import Ticker
-from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect
+from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect, rect_a_in_b
 
 
 class ObjectBase:
@@ -114,9 +114,16 @@ class ObjectBase:
     @property
     def is_onscreen(self):
         """
-        Returns if this object is in any way touching the screen
+        Returns if this object is completly on the screen
         """
         return rect_a_touch_b(self.rect, (0, 0, self.screen_w, self.screen_h))
+
+    @property
+    def is_touching_screen(self):
+        """
+        Returns if this object is completly on the screen
+        """
+        return rect_a_in_b(self.rect, (0, 0, self.screen_w, self.screen_h))
 
     @property
     def rect(self):

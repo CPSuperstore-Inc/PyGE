@@ -1,4 +1,5 @@
 import pygame
+import math
 import PyGE.Globals.Constants as Constants
 from xmltodict import OrderedDict
 
@@ -227,3 +228,27 @@ def get_surface_center(surf: pygame.Surface):
     :return: the center point as a tuple (x, y)
     """
     return surf.get_width() / 2, surf.get_height() / 2
+
+
+def radians(deg):
+    """
+    Converts degrees to radians
+    :param deg: the degrees
+    :return: the value in radians
+    """
+    return deg * (math.pi / 180)
+
+
+def degrees(rad):
+    """
+    Converts radians to degrees
+    :param rad: the radians
+    :return: the value in degrees
+    """
+    return rad * (180 / math.pi)
+
+
+def rotate_point(point:tuple, center, angle):
+    x = math.cos(angle) * (point[0] - center[0]) - math.sin(angle) * (point[1] - center[1]) + center[0]
+    y = math.sin(angle) * (point[0] - center[0]) + math.cos(angle) * (point[1]- center[1]) + center[1]
+    return x, y

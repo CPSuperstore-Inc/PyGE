@@ -171,6 +171,23 @@ class ObjectBase:
         """
         return self.__class__.__name__
 
+    def do_if_condition(self, condition:bool, action:callable, args=None):
+        """
+        Runs the specified function with specified arguements if the specified contition is True
+        :param condition: the condition to process
+        :param action: the reference to the functon to call if True
+        :param args: the arguements to call the function with
+        :return: if the action was taken
+        """
+        if args is None:
+            args = []
+        if condition:
+            action(*args)
+        return condition
+
+    def rotate_display_method(self, radians):
+        self.display.rotate(radians)
+
     def set_metadata(self, values:dict):
         """
         Reloads the object from the provided metadata

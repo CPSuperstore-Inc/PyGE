@@ -1,9 +1,8 @@
+import os
 import pygame
 
-import os
-
-from PyGE.Misc.SpriteSheet import SpriteSheet
 from PyGE.Misc.Font import Font
+from PyGE.Misc.SpriteSheet import SpriteSheet
 from PyGE.utils import scale_image
 
 # cache dictionaries
@@ -13,6 +12,7 @@ sounds = {}         # sound cache
 font = {}
 image_paths = {}
 sound_paths = {}
+vector_graphic = {}
 
 
 DEFAULT_IMAGE = None            # The default image (MUST BE STORED IN THE CACHE!)
@@ -273,4 +273,3 @@ def get_font_cache_list():
             "size": f.size
         })
     return out
-

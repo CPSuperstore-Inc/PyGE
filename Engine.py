@@ -9,6 +9,7 @@ from PyGE.Globals.GlobalVariable import set_var, set_sys_var
 from PyGE.Misc.Computer import get_monitor_resolution
 from PyGE.PyGEObject import PyGE
 from PyGE.utils import get_optional
+from PyGE.Misc.VectorGraphic import VectorGraphic
 
 
 def pyge_application(xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, development_screen_size:tuple=None, refresh_rate:int=60,
@@ -183,6 +184,13 @@ def side_scroller(
 
     set_var("loaded", True)
 
+    v = VectorGraphic(main_surf, [(1, 0), (0.5, 0.25), (1, 1), (0, 1), (0.5, 0.75), (0, 0)], 100, 100, (255, 0, 255), outline=(0, 255, 255), thickness=5)
+    d = v.copy()
+    d.set_pos(400, 150)
+    d.reflect()
+    v.scale(100)
+    d.scale(100)
+
     while True:
         events = pygame.event.get()
         for event in events:
@@ -192,7 +200,6 @@ def side_scroller(
                 if event.key == pygame.K_F4 and (event.mod & pygame.KMOD_ALT or event.mod & pygame.KMOD_RALT) and enable_alt_f4:
                     termanate()
 
-
         screen.fill(background_color)
         game.update(events)
         game.draw()
@@ -201,6 +208,11 @@ def side_scroller(
             main_surf.blit(pygame.transform.scale(screen, scaled_size), scaled_pos)
         else:
             main_surf.blit(screen, (0, 0))
+
+        v.draw()
+        d.draw()
+        pygame.draw.circle(main_surf, (255, 255, 0), (100, 100), 5)
+
 
         pygame.display.update()
 

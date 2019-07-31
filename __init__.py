@@ -22,6 +22,7 @@ from PyGE.Misc.Function import *
 from PyGE.Misc.Queue import *
 from PyGE.Misc.SpriteSheet import *
 from PyGE.Misc.Ticker import *
+from PyGE.Misc.VectorGraphic import *
 
 from PyGE.Objects.Cube import *
 from PyGE.Objects.ObjectBase import *

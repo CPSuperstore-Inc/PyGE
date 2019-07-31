@@ -4,12 +4,12 @@ import typing
 
 import pygame
 
-from PyGE.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet, set_font
+from PyGE.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet, \
+    set_font
 from PyGE.Globals.GlobalVariable import set_var, set_sys_var
 from PyGE.Misc.Computer import get_monitor_resolution
 from PyGE.PyGEObject import PyGE
 from PyGE.utils import get_optional
-from PyGE.Misc.VectorGraphic import VectorGraphic
 
 
 def pyge_application(xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, development_screen_size:tuple=None, refresh_rate:int=60,

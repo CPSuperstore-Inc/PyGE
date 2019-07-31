@@ -184,13 +184,6 @@ def side_scroller(
 
     set_var("loaded", True)
 
-    v = VectorGraphic(main_surf, [(1, 0), (0.5, 0.25), (1, 1), (0, 1), (0.5, 0.75), (0, 0)], 100, 100, (255, 0, 255), outline=(0, 255, 255), thickness=5)
-    d = v.copy()
-    d.set_pos(400, 150)
-    d.reflect()
-    v.scale(100)
-    d.scale(100)
-
     while True:
         events = pygame.event.get()
         for event in events:
@@ -208,11 +201,6 @@ def side_scroller(
             main_surf.blit(pygame.transform.scale(screen, scaled_size), scaled_pos)
         else:
             main_surf.blit(screen, (0, 0))
-
-        v.draw()
-        d.draw()
-        pygame.draw.circle(main_surf, (255, 255, 0), (100, 100), 5)
-
 
         pygame.display.update()
 

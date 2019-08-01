@@ -40,7 +40,7 @@ class Room(ScreenBase):
                                 found = True
                                 break
                         if found is False:
-                            raise ObjectNotDeclaredException("The Object '{0}' Is Referenced In The XML, But Is Not Declared. Please Place A Reference To The '{0}' Class In The 'custom_objects' List When Calling The 'side_scroller' Function.".format(item))
+                            raise ObjectNotDeclaredException("The Object '{0}' Is Referenced In The XML, But Is Not Declared. Please Place A Reference To The '{0}' Class In The 'custom_objects' List When Calling The 'pyge_application' Function.".format(item))
             else:
                 if not item.startswith("@"):
                     found = False

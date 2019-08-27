@@ -116,8 +116,8 @@ class ObjectBase:
         :param w: the new width
         """
         self.w = w
-        if self.should_center_width:
-            self.center_width()
+        # if self.should_center_width:
+        #     self.center_width()
 
     def set_height(self, h:int):
         """
@@ -126,8 +126,8 @@ class ObjectBase:
         :param h: the new height
         """
         self.h = h
-        if self.should_center_height:
-            self.center_height()
+        # if self.should_center_height:
+        #     self.center_height()
 
     def set_display_method(self, method:'DisplayBase'):
         """

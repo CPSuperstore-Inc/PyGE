@@ -1,7 +1,7 @@
+import logging
 import threading
 import time
 import typing
-import logging
 
 import pygame
 
@@ -11,8 +11,6 @@ from PyGE.Globals.GlobalVariable import set_var, set_sys_var
 from PyGE.Misc.Computer import get_monitor_resolution
 from PyGE.PyGEObject import PyGE
 from PyGE.utils import get_optional
-from PyGE.Misc.VectorGraphic import VectorGraphic
-
 
 LM_XML = 0
 LM_JSON = 1
@@ -208,7 +206,7 @@ def pyge_application(
     class_ref = PyGE
     if alt_side_scroller is not None:
         class_ref = alt_side_scroller
-    game = class_ref(screen, level_data, start_room, custom_objects, load_mode)
+    game = class_ref(screen, level_data, start_room, custom_objects, load_mode, background_color)
 
     load_duration = time.time() - load_start
     if load_duration < min_loading_time:
@@ -218,9 +216,6 @@ def pyge_application(
         post_load()
 
     set_var("loaded", True)
-
-    box = VectorGraphic(screen, [(1, 0), (0, 1), (1, 1), (0, 0)], 100, 100, (255, 0, 255))
-    box.scale(300)
 
     i = 1
     while True:
@@ -232,14 +227,10 @@ def pyge_application(
                 if event.key == pygame.K_F4 and (event.mod & pygame.KMOD_ALT or event.mod & pygame.KMOD_RALT) and enable_alt_f4:
                     termanate()
 
-        box.rotate_degrees(i)
         i += 1
 
-        screen.fill(background_color)
         game.update(events)
         game.draw()
-
-        box.draw()
 
         if auto_scale:
             main_surf.blit(pygame.transform.scale(screen, scaled_size), scaled_pos)

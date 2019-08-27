@@ -18,6 +18,9 @@ def convert_color(color:str):
      :return: a valid RGB color tuple
      """
 
+    if type(color) is tuple and len(color) == 3:
+        return color
+
     def cmyk_to_rgb(vals:tuple):
         if type(vals) is int:
             return tuple(int(str(vals)[i:i + 2], 16) for i in (0, 2, 4))

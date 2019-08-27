@@ -8,7 +8,7 @@ import pygame
 from PyGE.DisplayMethods.Color import Color, DisplayBase
 from PyGE.Globals.GlobalVariable import get_sys_var
 from PyGE.Misc.Ticker import Ticker
-from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect, rect_a_in_b
+from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect, rect_a_in_b, get_surface_center
 
 
 class ObjectBase:
@@ -26,25 +26,31 @@ class ObjectBase:
 
         self.angle = 0
 
-        self.should_center_width = get_mandatory(args, "@x", str) == "c"
-        self.should_center_height = get_mandatory(args, "@y", str) == "c"
+        # self.should_center_width = get_mandatory(args, "@x", str) == "c"
+        # self.should_center_height = get_mandatory(args, "@y", str) == "c"
 
         self.locked = get_optional(args, "@locked", "false")
 
         self.screen_w, self.screen_h = self.screen.get_size()
 
         self.display = Color(screen, (255, 0, 255), 10, 10)
-        self.w, self.h = self.display.get_size()
+        w, h = self.display.get_size()
 
-        if self.should_center_width:
-            self.x = self.center_width()
-        else:
-            self.x = get_mandatory(args, "@x", int)
+        self.w = get_optional(args, "@w", None)
+        self.h = get_optional(args, "@h", None)
+        
+        if self.w is None:
+            self.w = w
+            
+        if self.h is None:
+            self.h = h
+            
+        self.positional_vars = {}
+        self.reload_vars()
 
-        if self.should_center_height:
-            self.y = self.center_height()
-        else:
-            self.y = get_mandatory(args, "@y", int)
+        self.x = None
+        self.y = None
+        self.recalculate_position()
 
         self.on_screen_cache = True
         self.on_mouse_over_cache = False
@@ -66,6 +72,26 @@ class ObjectBase:
         self.siblings = self.parent.props.array
 
         self.oncreate()
+
+    def reload_vars(self):
+        self.positional_vars = {
+            "sw": self.screen_w,
+            "sh": self.screen_h,
+            "cw": self.calculate_center(self.w)[0],
+            "ch": self.calculate_center(self.h)[1],
+            "mw": self.w,
+            "mh": self.h
+        }
+
+    def recalculate_position(self):
+        self.reload_vars()
+        self.x = self.evaluate_variables(get_mandatory(self.args, "@x", str))
+        self.y = self.evaluate_variables(get_mandatory(self.args, "@y", str))
+        
+    def evaluate_variables(self, data:str):
+        for key, val in self.positional_vars.items():
+            data = data.replace(key, str(val))
+        return eval(data)
 
     def center_width(self):
         """
@@ -350,6 +376,30 @@ class ObjectBase:
             if me.contains_point(p):
                 return True
         return False
+
+    def calculate_center(self, width:int=None, height:int=None):
+        """
+        Calculates the x, y position to place the specified object in the center of the screen 
+        :param width: The width of the object to center (ommit and "None" will be returned for the "x" position)
+        :param height: The height of the object to center (ommit and "None" will be returned for the "y" position)
+        :return: the x, y position to place the object to center it
+        """
+        c = get_surface_center(self.screen)
+        w, h = None, None
+        if width is not None:
+            w = c[0] - (width / 2)
+        if height is not None:
+            h = c[1] - (height / 2)
+        return w, h
+
+    def run_func_in_sec(self, func:callable, delay:float, *args, **kwargs):
+        """
+        Runs the specified function after the specified delay
+        :param func: the reference to the function to run
+        :param delay: the delay in s
+        NOTE: after the delay, you may pass in poisional and named arguements which will be passed into the function which is run
+        """
+        self.parent.run_func_in_sec(func, delay, args, kwargs)
 
     def time_move(self, x_velocity:float, y_velocity:float):
         """

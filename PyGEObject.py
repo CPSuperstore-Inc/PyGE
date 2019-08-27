@@ -13,7 +13,7 @@ pygame.init()
 
 
 class PyGE:
-    def __init__(self, screen: pygame.Surface, level_data:str, starting_room: str, custom_objects:typing.List, load_mode:int=0):
+    def __init__(self, screen: pygame.Surface, level_data:str, starting_room: str, custom_objects:typing.List, load_mode:int=0, background_color:tuple=None):
         """
         This is the most important object in the entire system!
         You can use a custom version of this class by passing in a refrence to the class into the "alt_side_scroller" property
@@ -23,6 +23,7 @@ class PyGE:
         :param starting_room: the name of the room to start the user in
         :param custom_objects: a list of the references to the custom objects which will be used (not including objects provided by the engine)
         :param load_mode: The mode ID of the method to interpret the level data as (0=XML, 1=JSON)
+        :param background_color: The background color to use (tuple only) unless a room specifies otherwise
         """
 
         self.load_mode = load_mode
@@ -30,6 +31,10 @@ class PyGE:
         self.level_data = level_data
         self.rooms = {}
         self.custom_objects = PREMADE_OBJECTS + custom_objects
+        self.background_color = background_color
+        if self.background_color is None:
+            self.background_color = (0, 0, 0)
+
         self.load_game()
         self.room = None
 
@@ -54,8 +59,6 @@ class PyGE:
         block_data = json["blocks"]
         map_data = json["map"]
         properties = json["properties"]
-
-
 
         for name, data in map_data.items():
             w = len(data[0])

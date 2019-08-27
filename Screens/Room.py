@@ -1,10 +1,10 @@
 import typing
-
 import pygame
+from time import time
 
 from PyGE.Screens.ScreenBase import ScreenBase
 from PyGE.ASQL import ASQL
-from PyGE.utils import get_mandatory, point_in_rect
+from PyGE.utils import get_mandatory, point_in_rect, get_optional, convert_color
 from PyGE.Objects.ObjectBase import ObjectBase
 from PyGE.utils import rect_a_touch_b
 from PyGE.Globals.GlobalVariable import get_sys_var
@@ -20,12 +20,16 @@ class Room(ScreenBase):
         NOTE: Only key functions are documented, which are available to each object via the "parent" variable in each class
         """
         ScreenBase.__init__(self, screen)
+        self.tasks = []
         self.name = get_mandatory(data, "@name")
         self.props = ASQL()
         self.custom_objects = custom_objects
         self.parent = parent
         self.data = data
+        self.background_color = convert_color(get_optional(data, "@color", self.parent.background_color))
         self.load_room()
+
+
 
     def load_room(self):
         self.props = ASQL()
@@ -56,6 +60,16 @@ class Room(ScreenBase):
                             "The Object '{0}' Is Referenced In The XML, But Is Not Declared. Please Place A Reference To The '{0}' Class In The 'custom_objects' List When Calling The 'side_scroller' Function.".format(
                                 item))
 
+    def run_func_in_sec(self, func:callable, delay:float, *args, **kwargs):
+        """
+        Runs the specified function after the specified delay
+        :param func: the reference to the function to run
+        :param delay: the delay in s
+        NOTE: after the delay, you may pass in poisional and named arguements which will be passed into the function which is run
+        """
+        self.tasks.append((delay + time(), func, *args, *kwargs))
+        self.tasks = sorted(self.tasks,key=lambda l:l[0])
+
     def register_object(self, path:str, class_name:str):
         path = path.replace("\\", ".").replace("/", ".").replace(".py", "")
         class_name = class_name.replace(".py", "")
@@ -82,6 +96,7 @@ class Room(ScreenBase):
         return can_quit
 
     def draw(self):
+        self.screen.fill(self.background_color)
         for prop in self.props.array:
             if prop.on_screen_cache:
                 prop.draw()
@@ -89,6 +104,10 @@ class Room(ScreenBase):
                 pygame.draw.rect(self.screen, prop.debug_color, prop.rect, 3)
 
     def update(self, events:list):
+        if len(self.tasks) > 0:
+            if time() >= self.tasks[0][0]:
+                self.tasks[0][1](*self.tasks[0][2], **self.tasks[0][3])
+                del self.tasks[0]
         for prop in self.props.array:
             if prop.deleted:
                 self.props.array.remove(prop)

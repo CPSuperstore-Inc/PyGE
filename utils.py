@@ -32,8 +32,8 @@ def convert_color(color:str):
             b = rgb_scale * (1.0 - (y + k) / float(cmyk_scale))
             return r, g, b
 
-    if color in Constants.COLOR_NAMES:
-        color = Constants.COLOR_NAMES[color]
+    if color.lower() in Constants.COLOR_NAMES:
+        color = Constants.COLOR_NAMES[color.lower()]
 
     # TODO: MAKE THIS WAAAAAAAY MORE EFFICIENT
     # RGB variants
@@ -73,6 +73,8 @@ def get_optional(dic: dict, key: str, default, return_type:type=None, is_literal
         return default
 
     if return_type is not None:
+        if return_type is eval and val is None:
+            return None
         val = return_type(val)
     if return_type is int:
         val = round(float(val), 0)

@@ -1,32 +1,58 @@
 import threading
 import time
 import typing
+import logging
 
 import pygame
 
 from PyGE.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet, \
-    set_font
+    set_font, set_video, set_model
 from PyGE.Globals.GlobalVariable import set_var, set_sys_var
 from PyGE.Misc.Computer import get_monitor_resolution
 from PyGE.PyGEObject import PyGE
 from PyGE.utils import get_optional
+from PyGE.Misc.VectorGraphic import VectorGraphic
 
 
-def pyge_application(xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, development_screen_size:tuple=None, refresh_rate:int=60,
+LM_XML = 0
+LM_JSON = 1
+
+
+def side_scroller(xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, videos=None, development_screen_size:tuple=None, refresh_rate:int=60,
         caption:str= "Python Side Scroller Engine", icon:str=None, loading_screen:callable=None, min_loading_time:int=0,
         custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
         debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True, default_image:str=None,
         default_spritesheet:str=None, post_load:callable=None, alt_side_scroller=None, background_color:tuple=(0, 0, 0)
 ):
+
+    logging.warning("The Calling Of The 'side_scroller' Will Soon Be Depricated. Please Call The New 'pyge_application' Function Instead")
+
+    return pyge_application(xml, start_room, images, sprite_sheets, sounds, font, videos, None, development_screen_size, refresh_rate,
+        caption, icon, loading_screen, min_loading_time,
+        custom_objects, enable_alt_f4, initial_variables, fullscreen,
+        debug, debug_color, auto_scale, default_image,
+        default_spritesheet, post_load, alt_side_scroller, background_color)
+
+def pyge_application(
+        level_data:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, videos=None,
+        models=None, development_screen_size:tuple=None, refresh_rate:int=60,
+        caption:str= "Python Game Engine Application", icon:str=None, loading_screen:callable=None,
+        min_loading_time:int=0, custom_objects:list=None, enable_alt_f4:bool=True, initial_variables=None,
+        fullscreen:bool=True, debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True,
+        default_image:str=None, default_spritesheet:str=None, post_load:callable=None, alt_side_scroller=None,
+        background_color:tuple=(0, 0, 0), load_mode:int=0
+):
     """
     This is the function which starts the engine.
     This is the single most important function in the entire system.
-    :param xml: The XML data to build the game from
+    :param level_data: The XML data to build the game from
     :param start_room: The name of the room to start the player in
     :param images: A dictionary of the images, and their names to pre-load into the image cache. The value must be a dict object. Use "path" to specify the path to the image, "w" to specify the width to scale the image to (optional) and "h" to specify the height to scale the image to (optional)
     :param sprite_sheets: A dictionary of the Sprite Sheets, and their names to pre-load into the Sprite Sheets cache. Use "path" to specify the path to the sheet, "w" to specify the number of rows are in the sheet, "h" to specify the number of cols that are in the sheet, "duration" to specify the length of time to stay on each image, final_size as the size to scale each image to (format: [width, height]), and "invisible_color" as some RGB color which will be ignored. (in general, select a color not in any of the images)
     :param sounds: A dictionary of the sounds and their names to pre-load to the sound cache. Use "path" to specify the path to the sound, "volume" to specify the volume to play the sound at
     :param font: A dictionary of the fonts and their names to pre-load to the font cache. Use "path" to specify the path to the font, "size" to specify the font size, "bold" to specify if the font should be bold (default is False), and "italic" to specify if the font should be italicised (default is False)
+    :param videos: A dictionary of the videos and their names to pre-load to the font cache. Use "path" to specify the path to the file. See the Video page of the docs for the remainder of the options. (there are alot)
+    :param models: A dictionary of the 3D Models and their names to pre-load to the 3D model cache. Use "path" to specify the path to the file. See the Video page of the docs for the remainder of the options. (there are alot)
     :param development_screen_size: The size of the screen you develop with. We recomend 800x500. The screen can be scaled to the user's screen with different configurations (see below)
     :param refresh_rate: The maximum refresh rate of the game. Note: all movement is time-based, and independent of the framerate
     :param caption: The text to be shown as the game window's title 
@@ -45,22 +71,8 @@ def pyge_application(xml:str, start_room:str, images=None, sprite_sheets=None, s
     :param post_load: The funtion which will be called after everything has been loaded, but before the game starts
     :param alt_side_scroller: An alternate SideScroller class to use as the core engine. NOTE: MUST INHERIT FROM SideScroller CLASS in SideScroller/SideScroller.py
     :param background_color: The color of the screen's background (empty space where nothing is drawn). The default is black (0, 0, 0)
+    :param load_mode: The mode ID of the method to interpret the level data as (0=XML, 1=JSON) WARNING: Experamantal
     """
-
-    return side_scroller(xml, start_room, images, sprite_sheets, sounds, font, development_screen_size, refresh_rate,
-        caption, icon, loading_screen, min_loading_time,
-        custom_objects, enable_alt_f4, initial_variables, fullscreen,
-        debug, debug_color, auto_scale, default_image,
-        default_spritesheet, post_load, alt_side_scroller, background_color)
-
-
-def side_scroller(
-        xml:str, start_room:str, images=None, sprite_sheets=None, sounds=None, font=None, development_screen_size:tuple=None, refresh_rate:int=60,
-        caption:str= "Python Side Scroller Engine", icon:str=None, loading_screen:callable=None, min_loading_time:int=0,
-        custom_objects:typing.List=None, enable_alt_f4:bool=True, initial_variables=None, fullscreen:bool=True,
-        debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True, default_image:str=None,
-        default_spritesheet:str=None, post_load:callable=None, alt_side_scroller=None, background_color:tuple=(0, 0, 0)
-):
     tmp = []
 
     if custom_objects is None:
@@ -121,9 +133,9 @@ def side_scroller(
     if fullscreen: mode = pygame.FULLSCREEN
 
     if auto_scale:
-        main_surf = pygame.display.set_mode(game_screen_size, mode)
+        main_surf = pygame.display.set_mode(game_screen_size, mode | pygame.DOUBLEBUF)
     else:
-        main_surf = pygame.display.set_mode(development_screen_size, mode)
+        main_surf = pygame.display.set_mode(development_screen_size, mode | pygame.DOUBLEBUF)
 
     screen = pygame.Surface(development_screen_size)
 
@@ -151,6 +163,12 @@ def side_scroller(
     if font is None:
         font = {}
 
+    if videos is None:
+        videos = {}
+
+    if models is None:
+        models = {}
+
     if icon is not None:
         pygame.display.set_icon(pygame.image.load(icon))
 
@@ -166,6 +184,23 @@ def side_scroller(
     for name, props in font.items():
         set_font(name, props["path"], props["size"], bold=get_optional(props, "bold", False, bool), italic=get_optional(props, "italic", False, bool))
 
+    for name, props in videos.items():
+        set_video(
+            name, props["path"],
+            has_mask=get_optional(props, "has_mask", False, bool),
+            audio=get_optional(props, "audio", True, bool),
+            audio_buffersize=get_optional(props, "audio_buffersize", 200000, int),
+            target_resolution=get_optional(props, "target_resolution", None, eval),
+            resize_algorithm=get_optional(props, "resize_algorithm", 'bicubic', str),
+            audio_fps=get_optional(props, "audio_fps", 44100, int),
+            audio_nbytes=get_optional(props, "audio_nbytes", 2, int),
+            verbose=get_optional(props, "verbose", False, bool),
+            fps_source=get_optional(props, "fps_source", 'tbr', str)
+        )
+
+    for name, props in models.items():
+        set_model(name, path=props["path"])
+
     set_default_image(default_image)
     set_default_spritesheet(default_spritesheet)
 
@@ -173,7 +208,7 @@ def side_scroller(
     class_ref = PyGE
     if alt_side_scroller is not None:
         class_ref = alt_side_scroller
-    game = class_ref(screen, xml, start_room, custom_objects)
+    game = class_ref(screen, level_data, start_room, custom_objects, load_mode)
 
     load_duration = time.time() - load_start
     if load_duration < min_loading_time:
@@ -184,6 +219,10 @@ def side_scroller(
 
     set_var("loaded", True)
 
+    box = VectorGraphic(screen, [(1, 0), (0, 1), (1, 1), (0, 0)], 100, 100, (255, 0, 255))
+    box.scale(300)
+
+    i = 1
     while True:
         events = pygame.event.get()
         for event in events:
@@ -193,9 +232,14 @@ def side_scroller(
                 if event.key == pygame.K_F4 and (event.mod & pygame.KMOD_ALT or event.mod & pygame.KMOD_RALT) and enable_alt_f4:
                     termanate()
 
+        box.rotate_degrees(i)
+        i += 1
+
         screen.fill(background_color)
         game.update(events)
         game.draw()
+
+        box.draw()
 
         if auto_scale:
             main_surf.blit(pygame.transform.scale(screen, scaled_size), scaled_pos)

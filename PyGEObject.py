@@ -2,16 +2,18 @@ import typing
 
 import pygame
 import xmltodict
+import json as js_to_the_o_to_the_n
 
 from PyGE.Screens.Room import Room
 from PyGE.Errors import RoomNotDeclaredException, InvalidXMLException
 from PyGE.Globals.Objects import PREMADE_OBJECTS
 
+
 pygame.init()
 
 
 class PyGE:
-    def __init__(self, screen: pygame.Surface, level_data:str, starting_room: str, custom_objects:typing.List):
+    def __init__(self, screen: pygame.Surface, level_data:str, starting_room: str, custom_objects:typing.List, load_mode:int=0):
         """
         This is the most important object in the entire system!
         You can use a custom version of this class by passing in a refrence to the class into the "alt_side_scroller" property
@@ -20,8 +22,10 @@ class PyGE:
         :param level_data: the XML representation of the level 
         :param starting_room: the name of the room to start the user in
         :param custom_objects: a list of the references to the custom objects which will be used (not including objects provided by the engine)
+        :param load_mode: The mode ID of the method to interpret the level data as (0=XML, 1=JSON)
         """
 
+        self.load_mode = load_mode
         self.screen = screen
         self.level_data = level_data
         self.rooms = {}
@@ -32,8 +36,44 @@ class PyGE:
         self.set_room(starting_room)
 
     def load_game(self, level_data: str=None):
+        modes = {
+            0: self.load_from_xml,
+            1: self.load_from_json
+        }
+        modes[self.load_mode](level_data)
+
+    def load_from_json(self, level_data):
         """
-        Builds each room, and creates all nessicary objects
+        Builds each room from JSON, and creates all nessicary objects
+        :param level_data: the data to load from. If not specified, use the data which was provided when the class was instantiated 
+        """
+        if level_data is None:
+            level_data = self.level_data
+        json = dict(js_to_the_o_to_the_n.loads(level_data))
+
+        block_data = json["blocks"]
+        map_data = json["map"]
+        properties = json["properties"]
+
+
+
+        for name, data in map_data.items():
+            w = len(data[0])
+            h = len(data)
+            y = 0
+            for row in data:
+                x = 0
+                for col in row:
+                    print(col)
+            print(name, data)
+        print(block_data)
+        print(map_data)
+        print(properties)
+        quit()
+
+    def load_from_xml(self, level_data):
+        """
+        Builds each room from XML, and creates all nessicary objects
         :param level_data: the data to load from. If not specified, use the data which was provided when the class was instantiated 
         """
         if level_data is None:

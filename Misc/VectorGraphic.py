@@ -45,8 +45,8 @@ class VectorGraphic:
         Scales the shape by the specified factor
         :param factor: the factor to scale the points
         """
-        self.points *= factor
-        self.origin *= factor
+        numpy.multiply(self.points, factor, out=self.points, casting="unsafe")
+        numpy.multiply(self.origin, factor, out=self.origin, casting="unsafe")
         self.reposition()
 
     def set_pos(self, x, y):
@@ -63,7 +63,7 @@ class VectorGraphic:
         Recenters the graphic arround its position
         (you will probabally not need to use this one)
         """
-        self.points += self.pos - self.center
+        numpy.add(self.points, self.pos - self.center, out=self.points, casting="unsafe")
 
     def rotate_degrees(self, deg):
         """
@@ -78,6 +78,8 @@ class VectorGraphic:
         :param rad: the amount of radians to rotate the graphic by
         """
         self.points = numpy.array([rotate_point(x, self.pos, rad) for x in self.origin + self.center / 2])
+        self.reposition()
+
 
     def reflect(self, horizontal:bool=True, vertical:bool=True):
         """

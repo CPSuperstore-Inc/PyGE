@@ -3,6 +3,8 @@ import pygame
 
 from PyGE.Misc.Font import Font
 from PyGE.Misc.SpriteSheet import SpriteSheet
+from PyGE.Misc.Video import Video
+from PyGE.Misc.Model import Model
 from PyGE.utils import scale_image
 
 # cache dictionaries
@@ -13,6 +15,8 @@ font = {}
 image_paths = {}
 sound_paths = {}
 vector_graphic = {}
+videos = {}
+models = {}
 
 
 DEFAULT_IMAGE = None            # The default image (MUST BE STORED IN THE CACHE!)
@@ -273,3 +277,41 @@ def get_font_cache_list():
             "size": f.size
         })
     return out
+
+
+def set_video(name, path, has_mask=False, audio=True, audio_buffersize=200000, target_resolution=None,
+            resize_algorithm='bicubic', audio_fps=44100, audio_nbytes=2, verbose=False, fps_source='tbr'):
+    """
+    Loads a video into cache
+    :param name: the name of the video
+    :param path: the path to the video
+    :param has_mask: If the video should contain a mask (rarley used)
+    :param audio: If the video should play it's audio
+    :param audio_buffersize: 
+    :param target_resolution: the size to set the video to (default is the screen size)
+    :param resize_algorithm: The algorithm to resize the video ("bicubic", "bilinear", or "fast_bilinear")
+    :param audio_fps: 
+    :param audio_nbytes: 
+    :param verbose: 
+    :param fps_source: 
+    """
+
+    if target_resolution is not None:
+        target_resolution = (target_resolution[1], target_resolution[0])
+    videos[name] = Video(
+        path, has_mask, audio, audio_buffersize, target_resolution, resize_algorithm, audio_fps, audio_nbytes,
+        verbose, fps_source
+    )
+
+
+def get_video(name):
+    """
+    Retrurns the video in the cache with the specified name
+    :param name: the name of the video
+    :return: the video assigned to the provided name
+    """
+    return videos[name]
+
+
+def set_model(name, path):
+    models[name] = Model(path)

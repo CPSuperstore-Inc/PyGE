@@ -1,3 +1,4 @@
+import logging
 import pygame
 import os
 
@@ -17,8 +18,7 @@ class Font:
         self.italic = italic
 
         if not os.path.isfile(path):
-            print("WARNING: Font File '{}' Could Not Be Located!".format(path))
-            print("System Font Will Be Used In Place. This WILL cause a fatal error when project is exported")
+            logging.warning("WARNING: Font File '{}' Could Not Be Located! The System Font Will Be Used In Place. This WILL cause a fatal error when project is exported".format(path))
             self.font = pygame.font.SysFont(path, size, bold=bold, italic=italic)
         else:
             self.font = pygame.font.Font(path, size, bold=bold, italic=italic)

@@ -89,7 +89,10 @@ class PyGE:
         except xmltodict.expat.ExpatError:
             raise InvalidXMLException("The XML Provided Is Invalid (Syntax Error?). Please Check The XML, And Try Again")
         building = json["building"]["room"]
-        sub_rooms = json["building"]["subroom"]
+
+        sub_rooms = []
+        if "subroom" in json["building"]:
+            sub_rooms = json["building"]["subroom"]
 
         if "@name" in building:
             building = [building]

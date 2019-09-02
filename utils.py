@@ -263,6 +263,12 @@ def rotate_point(point:tuple, center, angle):
 
 
 def pitch_to_note(freq, a4=440):
+    """
+    Returns the note name of the provided frequency (ex. A#3, or C2)
+    :param freq: the frequency (in Hz)
+    :param a4: the frequency of A4 (set the tuning) Default is 440
+    :return: the note name of the specified frequency
+    """
     if freq == 0:
         return None
     c0 = a4 * pow(2, -4.75)

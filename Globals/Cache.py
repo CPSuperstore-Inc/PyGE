@@ -17,6 +17,7 @@ sound_paths = {}
 vector_graphic = {}
 videos = {}
 models = {}
+subrooms = {}
 
 
 DEFAULT_IMAGE = None            # The default image (MUST BE STORED IN THE CACHE!)
@@ -315,3 +316,12 @@ def get_video(name):
 
 def set_model(name, path):
     models[name] = Model(path)
+
+
+def set_subroom(name, subroom):
+    """
+    Loads a subroom into cache
+    :param name: the reference name of the subroom
+    :param subroom: the subroom object
+    """
+    subrooms[name] = subroom

@@ -95,6 +95,9 @@ def pyge_application(
     if initial_variables is None:
         initial_variables = {}
 
+    set_var("vertical_g", -9.80665)
+    set_var("lateral_g", 0)
+
     for name, value in initial_variables.items():
         set_var(name, value)
 

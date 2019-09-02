@@ -30,6 +30,7 @@ class PyGE:
         self.screen = screen
         self.level_data = level_data
         self.rooms = {}
+        self.sub_rooms = {}
         self.custom_objects = PREMADE_OBJECTS + custom_objects
         self.background_color = background_color
         if self.background_color is None:
@@ -88,12 +89,16 @@ class PyGE:
         except xmltodict.expat.ExpatError:
             raise InvalidXMLException("The XML Provided Is Invalid (Syntax Error?). Please Check The XML, And Try Again")
         building = json["building"]["room"]
+        sub_rooms = json["building"]["subroom"]
 
         if "@name" in building:
             building = [building]
+        if "@name" in sub_rooms:
+            sub_rooms = [sub_rooms]
         for room in building:
             self.rooms[str(room["@name"])] = Room(self.screen, room, self.custom_objects, self)
-
+        # for sub_room in sub_rooms:
+        #     self.sub_rooms[str(sub_room["@name"])] = SubRoom(self.screen, sub_room, self.custom_objects, self)
     def update(self, events:list):
         """
         Triggers the selected room's update event

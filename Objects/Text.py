@@ -18,6 +18,7 @@ class Text(ObjectBase):
 
         self.text_object = None
         self.rebuild_text_object()
+        self.start_frequency_monitor()
 
     @property
     def metadata(self):
@@ -53,3 +54,6 @@ class Text(ObjectBase):
 
     def draw(self):
         self.draw_to_screen(self.text_object)
+        print(utils.pitch_to_note(
+            self.get_var("current_pitch")
+        ))

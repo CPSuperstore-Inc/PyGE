@@ -6,7 +6,8 @@ import numpy as np
 import pygame
 
 from PyGE.DisplayMethods.Color import Color, DisplayBase
-from PyGE.Globals.GlobalVariable import get_sys_var
+from PyGE.Globals.GlobalVariable import get_sys_var, new_thread, get_var, set_var
+from PyGE.BackgroundTasks import frequency_monitor
 from PyGE.Misc.Ticker import Ticker
 from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect, rect_a_in_b, get_surface_center
 
@@ -72,6 +73,8 @@ class ObjectBase:
         self.siblings = self.parent.props.array
 
         self.oncreate()
+
+        self.frequency_monitor_thread = None
 
     def reload_vars(self):
         self.positional_vars = {
@@ -197,6 +200,30 @@ class ObjectBase:
         """
         return self.__class__.__name__
 
+    def start_frequency_monitor(self):
+        """
+        Starts the frequency monitoring system. This is a thread which can not be stopped (yet)
+        To get the frequency of the primary audio input, use "self.get_var("current_pitch")"
+        This is accessable accross all objects, so DO NOT call this more than once!
+        """
+        self.frequency_monitor_thread = new_thread(frequency_monitor, "fm", True)
+
+    def get_var(self, name):
+        """
+        Gets a globally set variable
+        :param name: the name of the variable
+        :return: the value of the variable
+        """
+        return get_var(name)
+
+    def set_var(self, name, value):
+        """
+        Sets the value of a global variable
+        :param name: the name of the variable
+        :param value: the value of the variable
+        """
+        set_var(name, value)
+
     def do_if_condition(self, condition:bool, action:callable, args=None):
         """
         Runs the specified function with specified arguements if the specified contition is True
@@ -311,6 +338,7 @@ class ObjectBase:
         self.ticker = Ticker()
 
     def system_update(self):
+        self.parent_update()
         self.time_delta = self.ticker.tick
 
     def move(self, x, y, fire_onscreen_event=True):
@@ -615,6 +643,12 @@ class ObjectBase:
         :param destanation: the single object to send the message to
         """
         self.multicast_message(message, [destanation])
+
+    def parent_update(self):
+        """
+        This method is here in the event another update is needed (like a parent object)
+        """
+        pass
 
     def update(self, pressed_keys):
         """

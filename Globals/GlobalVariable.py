@@ -1,6 +1,22 @@
+import threading
+
 VARIABLES = {
-    "loaded": False
+    "loaded": False,
+    "current_pitch": 0.0
 }
+threads = []
+
+def new_thread(action:callable, name, start, *args, **kwargs):
+    p = threading.Thread(
+        target=action,
+        name=name,
+        args=args,
+        kwargs=kwargs
+    )
+    if start:
+        p.start()
+    threads.append(p)
+    return p
 
 def set_var(key, value):
     """

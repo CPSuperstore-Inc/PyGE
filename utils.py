@@ -2,6 +2,9 @@ import pygame
 import math
 import PyGE.Globals.Constants as Constants
 from xmltodict import OrderedDict
+from math import log2, pow
+
+NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 def convert_color(color:str):
     """
@@ -257,3 +260,13 @@ def rotate_point(point:tuple, center, angle):
     x = math.cos(angle) * (point[0] - center[0]) - math.sin(angle) * (point[1] - center[1]) + center[0]
     y = math.sin(angle) * (point[0] - center[0]) + math.cos(angle) * (point[1]- center[1]) + center[1]
     return x, y
+
+
+def pitch_to_note(freq, a4=440):
+    if freq == 0:
+        return None
+    c0 = a4 * pow(2, -4.75)
+    h = round(12 * log2(freq / c0))
+    octave = h // 12
+    n = h % 12
+    return NOTE_NAMES[n] + str(octave)

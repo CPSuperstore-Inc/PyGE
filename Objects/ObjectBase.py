@@ -18,7 +18,7 @@ class ObjectBase:
         This is the object ALL objects MUST inherit from to be used in a room.
         This is the parent of ALL objects.
         :param screen: The screen to draw the object to
-        :param args: The dictionary of properties specified in the XML. NOTE: Any property defined in a tag, will have the '@' infront of it 
+        :param args: The dictionary of properties specified in the XML.
         :param parent: The room the object will live in 
         """
         self.screen = screen
@@ -201,6 +201,20 @@ class ObjectBase:
         Gets this object's class name as a string
         """
         return self.__class__.__name__
+
+    def set_zindex(self, zindex):
+        """
+        Sets this object's zindex. The lower the zindex is, the further back it is drawn. Example: zindex 10 is drawn on top of zindex 1  
+        :param zindex: the zindex to use
+        """
+        self.zindex = zindex
+
+    def get_zindex(self):
+        """
+        Returns this object's current zindex
+        :return: the zindex
+        """
+        return self.zindex
 
     def start_frequency_monitor(self):
         """

@@ -5,10 +5,10 @@ from PyGE.Errors import *
 from PyGE.PyGE import *
 from PyGE.utils import *
 
-from PyGE.DisplayMethods.Color import *
-from PyGE.DisplayMethods.DisplayBase import *
-from PyGE.DisplayMethods.Image import *
-from PyGE.DisplayMethods.SpriteSheet import *
+from PyGE.DisplayMethods.Color import Color
+from PyGE.DisplayMethods.DisplayBase import DisplayBase
+from PyGE.DisplayMethods.Image import Image
+from PyGE.DisplayMethods.SpriteSheet import SpriteSheet
 
 from PyGE.Globals.Cache import *
 from PyGE.Globals.Constants import *
@@ -20,13 +20,14 @@ from PyGE.Misc.Computer import *
 from PyGE.Misc.Font import *
 from PyGE.Misc.Function import *
 from PyGE.Misc.Queue import *
-from PyGE.Misc.SpriteSheet import *
+from PyGE.Misc.SpriteSheet import SpriteSheet as SpriteSheetObject
 from PyGE.Misc.Ticker import *
 from PyGE.Misc.VectorGraphic import *
 
 from PyGE.Objects.Cube import *
-from PyGE.Objects.ObjectBase import *
-from PyGE.Objects.ObjectBase3D import *
+from PyGE.Objects.ObjectBase import ObjectBase
+from PyGE.Objects.ObjectBase3D import ObjectBase3D
+from PyGE.Objects.AbstractObjectBase import AbstractObjectBase
 from PyGE.Objects.Text import *
 
 from PyGE.Screens.Room import *

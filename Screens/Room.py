@@ -188,6 +188,7 @@ class Room(ScreenBase):
                 obj = c(self.screen, args, self)
                 self.props.append(obj)
                 return obj
+        raise ObjectNotDeclaredException("The Class Type '{0}' Is Created In Code, But Is Not Declared. Please Place A Reference To The '{0}' Class In The 'custom_objects' List When Calling The 'pyge_application' Function.".format(class_type))
 
     def add_created_object(self, o):
         self.props.append(o)

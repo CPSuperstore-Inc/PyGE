@@ -97,7 +97,7 @@ class Room(ScreenBase):
 
     def draw(self):
         self.screen.fill(self.background_color)
-        for prop in self.props.array:
+        for prop in self.props.filter(sort="zindex"):
             if prop.on_screen_cache:
                 prop.draw()
             if get_sys_var("debug"):

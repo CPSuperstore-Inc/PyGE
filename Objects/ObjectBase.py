@@ -76,6 +76,8 @@ class ObjectBase:
 
         self.frequency_monitor_thread = None
 
+        self.zindex = 10
+
     def reload_vars(self):
         self.positional_vars = {
             "sw": self.screen_w,

@@ -13,6 +13,7 @@ def new_thread(action:callable, name, start, *args, **kwargs):
         args=args,
         kwargs=kwargs
     )
+    p.setDaemon(True)
     if start:
         p.start()
     threads.append(p)

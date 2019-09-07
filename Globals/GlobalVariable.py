@@ -6,9 +6,19 @@ VARIABLES = {
 }
 threads = []
 
-def new_thread(action:callable, name, start, *args, **kwargs):
+def new_thread(target:callable, name:str, start:bool, *args, **kwargs):
+    """
+    Spawns and returns a new thread (can not be killed)
+    Also adds the thread to the list of system threads used by the engine
+    :param target: the function to call for the thread
+    :param name: the thread's name
+    :param start: if the thread should be started when created
+    :param args: other positional arguements to run the function with
+    :param kwargs: other named arguements to run the function with
+    :return: the newly created thread
+    """
     p = threading.Thread(
-        target=action,
+        target=target,
         name=name,
         args=args,
         kwargs=kwargs

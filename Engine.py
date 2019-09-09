@@ -180,7 +180,7 @@ def pyge_application(
         set_image(name, props['path'], get_optional(props, "w", None), get_optional(props, "h", None))
 
     for name, props in sprite_sheets.items():
-        set_spritesheet(name, props["path"], props["w"], props["h"], props["duration"], get_optional(props, "final_size", None), get_optional(props, "invisible_color", (0, 0, 1)))
+        set_spritesheet(name, props["path"], props["w"], props["h"], props["duration"], get_optional(props, "final_size", None), get_optional(props, "invisible_color", (10, 10, 10)))
 
     for name, props in sounds.items():
         set_sound(name, props["path"], get_optional(props, "volume", 1.0, float))

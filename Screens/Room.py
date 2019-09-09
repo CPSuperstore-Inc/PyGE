@@ -30,7 +30,6 @@ class Room(ScreenBase):
         self.load_room()
 
 
-
     def load_room(self):
         self.props = ASQL()
         for item in self.data:

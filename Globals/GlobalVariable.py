@@ -67,7 +67,8 @@ def show_vars():
 
 SYS_VARS = {
     "debug": False,
-    "debug-color": (255, 255, 255)
+    "debug-color": (255, 255, 255),
+    "audio-anaylasis-enabled": False
 }
 
 def set_sys_var(key, value):

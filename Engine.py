@@ -38,7 +38,7 @@ def pyge_application(
         min_loading_time:int=0, custom_objects:list=None, enable_alt_f4:bool=True, initial_variables=None,
         fullscreen:bool=True, debug:bool=False, debug_color:tuple=(255, 255, 255), auto_scale:bool=True,
         default_image:str=None, default_spritesheet:str=None, post_load:callable=None, alt_side_scroller=None,
-        background_color:tuple=(0, 0, 0), load_mode:int=0
+        background_color:tuple=(0, 0, 0), load_mode:int=0, audio_anaylasis_enabled:bool=False
 ):
     """
     This is the function which starts the engine.
@@ -70,8 +70,11 @@ def pyge_application(
     :param alt_side_scroller: An alternate SideScroller class to use as the core engine. NOTE: MUST INHERIT FROM SideScroller CLASS in SideScroller/SideScroller.py
     :param background_color: The color of the screen's background (empty space where nothing is drawn). The default is black (0, 0, 0)
     :param load_mode: The mode ID of the method to interpret the level data as (0=XML, 1=JSON) WARNING: Experamantal
+    :param audio_anaylasis_enabled: If the system should allow audio anaylasis. (You need to install 'aubio' first, which many people have issues with)
     """
     tmp = []
+
+    set_sys_var("audio-anaylasis-enabled", audio_anaylasis_enabled)
 
     if custom_objects is None:
         custom_objects = []

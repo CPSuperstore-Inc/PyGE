@@ -83,7 +83,7 @@ class ObjectBase:
             "sw": self.screen_w,
             "sh": self.screen_h,
             "cw": self.calculate_center(self.w)[0],
-            "ch": self.calculate_center(self.h)[1],
+            "ch": self.calculate_center(None, self.h)[1],
             "mw": self.w,
             "mh": self.h
         }

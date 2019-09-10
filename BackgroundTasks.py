@@ -1,10 +1,7 @@
 from PyGE.Globals.GlobalVariable import set_var, get_sys_var
 
-if get_sys_var("audio-anaylasis-enabled"):
-    import aubio
 import numpy as num
 import pyaudio
-
 
 
 def frequency_monitor(unit="Hz", silence=-40):
@@ -17,6 +14,7 @@ def frequency_monitor(unit="Hz", silence=-40):
     """
     if not get_sys_var("audio-anaylasis-enabled"):
         raise ValueError("Please Enable Audio Anaylasis In The Main Function Call (Set Paramater audio_anaylasis_enabled To True)")
+    import aubio
 
     # constants
     buffer_size = 2048

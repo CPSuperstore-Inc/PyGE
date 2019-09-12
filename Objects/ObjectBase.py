@@ -9,7 +9,7 @@ from PyGE.DisplayMethods.Color import Color, DisplayBase
 from PyGE.Globals.GlobalVariable import get_sys_var, new_thread, get_var, set_var
 from PyGE.BackgroundTasks import frequency_monitor
 from PyGE.Misc.Ticker import Ticker
-from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect, rect_a_in_b, get_surface_center
+from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rect, rect_a_in_b, get_surface_center, convert_color
 
 
 class ObjectBase:
@@ -22,7 +22,7 @@ class ObjectBase:
         :param parent: The room the object will live in 
         """
         self.screen = screen
-        self.args = args
+        self.args = self.modify_args(args)
         self.parent = parent
 
         self.angle = 0
@@ -30,15 +30,15 @@ class ObjectBase:
         # self.should_center_width = get_mandatory(args, "@x", str) == "c"
         # self.should_center_height = get_mandatory(args, "@y", str) == "c"
 
-        self.locked = get_optional(args, "@locked", "false")
+        self.locked = get_optional(args, "locked", "false")
 
         self.screen_w, self.screen_h = self.screen.get_size()
 
         self.display = Color(screen, (255, 0, 255), 10, 10)
         w, h = self.display.get_size()
 
-        self.w = get_optional(args, "@w", None)
-        self.h = get_optional(args, "@h", None)
+        self.w = get_optional(args, "w", None)
+        self.h = get_optional(args, "h", None)
         
         if self.w is None:
             self.w = w
@@ -90,13 +90,21 @@ class ObjectBase:
 
     def recalculate_position(self):
         self.reload_vars()
-        self.x = self.evaluate_variables(get_mandatory(self.args, "@x", str))
-        self.y = self.evaluate_variables(get_mandatory(self.args, "@y", str))
+        self.x = self.evaluate_variables(get_mandatory(self.args, "x", str))
+        self.y = self.evaluate_variables(get_mandatory(self.args, "y", str))
         
     def evaluate_variables(self, data:str):
         for key, val in self.positional_vars.items():
             data = data.replace(key, str(val))
         return eval(data)
+
+    def modify_args(self, args:dict):
+        """
+        This method provides you with onbe final chance to modify the arguements before they are used by the object
+        :param args: the current arguement dictionary. Note that items coming from XML will have the "@" sign before the key. Don't worry about this. 
+        :return: the modified arguement dictionary.
+        """
+        return args
 
     def center_width(self):
         """
@@ -660,6 +668,120 @@ class ObjectBase:
         """
         self.multicast_message(message, [destanation])
 
+    # region Drawable Wrappers
+    def draw_rect(self, color, x:int, y:int, w:int, h:int, width:int=0):
+        """
+        Draws a rectangle on the screen
+        :param color: The color of the rectangle
+        :param x: the x position of the rectangle
+        :param y: the y position of the rectangle
+        :param w: the width of the rectangle
+        :param h: the height of the rectangle
+        :param width: the line thickness of the rectangle (0 to fill completly)
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.rect(self.screen, convert_color(color), (x, y, w, h), width)
+
+    def draw_polygon(self, color, points:list, width:int=0):
+        """
+        Draws a polygon to the screen
+        :param color: The color of the polygon
+        :param points: the list of points (ex: [(x1, y1), (x2, y2), (x3, y3)] ) The first and last points will connect. Must have more than 3 points.
+        :param width: the line thickness of the polygon (0 to fill completly)
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.polygon(self.screen, convert_color(color), points, width)
+
+    def draw_circle(self, color, x:int, y:int, radius:int, width:int=0):
+        """
+        Draws a circle to the screen
+        :param color: the color of the circle
+        :param x: the x position of the circle
+        :param y: the y position of the circle
+        :param radius: the radius of the circle
+        :param width: the line thickness of the circle (0 to fill completly)
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.circle(self.screen, convert_color(color), (x, y), radius, width)
+
+    def draw_elipse(self, color, x:int, y:int, w:int, h:int, width:int=0):
+        """
+        Draws an elipse to the screen
+        :param color: the color of the circle
+        :param x: the x position of the elipse
+        :param y: the y position of the elipse
+        :param w: the width of the elipse
+        :param h: the height of the elipse
+        :param width: the line thickness of the elipse (0 to fill completly)
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.ellipse(self.screen, convert_color(color), (x, y, w, h), width)
+
+    def draw_arc(self, color, x:int, y:int, w:int, h:int, angle1:float, angle2:float, width:int=1):
+        """
+        Draws an arc to the screen
+        :param color: the color of the arc
+        :param x: the x position of the arc
+        :param y: the y position of the arc
+        :param w: the width of the arc
+        :param h: the height of the arc
+        :param angle1: The starting angle in radians
+        :param angle2: The ending angle in radians
+        :param width: the line thickness of the arc
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.arc(self.screen, convert_color(color), (x, y, w, h), angle1, angle2, width)
+
+    def draw_line(self, color, x1:int, y1:int, x2:int, y2:int, width:int=1):
+        """
+        Draws a line to the screen
+        :param color: the color of the line
+        :param x1: the x position of the line's starting point
+        :param y1: the y position of the line's starting point
+        :param x2: the x position of the line's ending point
+        :param y2: the y position of the line's ending point
+        :param width: the line thickness
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.line(self.screen, convert_color(color), (x1, y1), (x2, y2), width)
+
+    def draw_lines(self, color, closed:bool, points:list, width:int=1):
+        """
+        Draws a series of lines to the screen
+        :param color: the color of the lines
+        :param closed: if the engine should draw an additional line between the first an last point
+        :param points: a list of points to be connected by lines (ex: [(x1, y1), (x2, y2), (x3, y3)] ) Must have more than 3 points.
+        :param width: the line thicknesses
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.lines(self.screen, convert_color(color), closed, points, width)
+
+    def draw_aaline(self, color, x1: int, y1: int, x2: int, y2: int, width: int = 1):
+        """
+        Draws an antialiased line to the screen
+        :param color: the color of the line
+        :param x1: the x position of the line's starting point
+        :param y1: the y position of the line's starting point
+        :param x2: the x position of the line's ending point
+        :param y2: the y position of the line's ending point
+        :param width: the line thickness
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.aaline(self.screen, convert_color(color), (x1, y1), (x2, y2), width)
+
+    def draw_aalines(self, color, closed: bool, points: list, width: int = 1):
+        """
+        Draws a series of antialiased lines to the screen
+        :param color: the color of the lines
+        :param closed: if the engine should draw an additional line between the first an last point
+        :param points: a list of points to be connected by lines (ex: [(x1, y1), (x2, y2), (x3, y3)] ) Must have more than 3 points.
+        :param width: the line thicknesses
+        :return: the rectangle which surrounds this object (pygame rect)
+        """
+        return pygame.draw.aalines(self.screen, convert_color(color), closed, points, width)
+    # endregion
+
+    # region Overridable Methods
     def parent_update(self):
         """
         This method is here in the event another update is needed (like a parent object)
@@ -839,3 +961,4 @@ class ObjectBase:
         :param message: the message recieved
         """
         pass
+    #endregion

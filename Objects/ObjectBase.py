@@ -668,7 +668,6 @@ class ObjectBase:
         """
         self.multicast_message(message, [destanation])
 
-    # region Drawable Wrappers
     def draw_rect(self, color, x:int, y:int, w:int, h:int, width:int=0):
         """
         Draws a rectangle on the screen
@@ -779,9 +778,7 @@ class ObjectBase:
         :return: the rectangle which surrounds this object (pygame rect)
         """
         return pygame.draw.aalines(self.screen, convert_color(color), closed, points, width)
-    # endregion
 
-    # region Overridable Methods
     def parent_update(self):
         """
         This method is here in the event another update is needed (like a parent object)
@@ -961,4 +958,3 @@ class ObjectBase:
         :param message: the message recieved
         """
         pass
-    #endregion

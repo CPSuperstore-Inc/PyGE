@@ -439,9 +439,9 @@ class ObjectBase:
         c = get_surface_center(self.screen)
         w, h = None, None
         if width is not None:
-            w = c[0] - (width / 2)
+            w = c[0] - (int(width) / 2)
         if height is not None:
-            h = c[1] - (height / 2)
+            h = c[1] - (int(height) / 2)
         return w, h
 
     def run_func_in_sec(self, func:callable, delay:float, *args, **kwargs):

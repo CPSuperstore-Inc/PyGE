@@ -825,6 +825,14 @@ class ObjectBase:
         """
         pass
 
+    def force_draw(self):
+        """
+        Overridable method run once per frame. This is for all of the drawing which needs to be done.
+        It is stronlgy recomended to keep all of your logic in the "update" method, and your visual updates here.
+        NOTE: this method WILL run if the object is off the screen (We HIGHLY recomend you use the draw() method instead)
+        """
+        pass
+
     def onclick(self, button, pos):
         """
         Overridable event run each time this object is clicked (the mouse changes to the down state)

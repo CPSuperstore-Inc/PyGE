@@ -99,6 +99,7 @@ class Room(ScreenBase):
         for prop in self.props.filter(sort="zindex"):
             if prop.on_screen_cache:
                 prop.draw()
+            prop.force_draw()
             if get_sys_var("debug"):
                 pygame.draw.rect(self.screen, prop.debug_color, prop.rect, 3)
 

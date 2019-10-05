@@ -265,6 +265,15 @@ class ObjectBase:
     def rotate_display_method(self, radians):
         self.display.rotate(radians)
 
+    def radians(self, degress:float):
+        return degress * (math.pi / 180.0)
+
+    def get_rotated(self, surf:pygame.Surface, radians:float=None):
+        if radians is None:
+            radians = self.angle
+
+        return pygame.transform.rotate(surf, radians)
+
     def set_metadata(self, values:dict):
         """
         Reloads the object from the provided metadata
@@ -586,8 +595,8 @@ class ObjectBase:
         if angle is None:
             angle = self.angle
         self.move(
-            int(velocity * math.cos(angle * (math.pi / 180))),
-            int(velocity * math.sin(angle * (math.pi / 180)))
+            velocity * math.cos(angle),
+            velocity * math.sin(angle)
         )
 
     def move_angle_time(self, velocity, angle=None):
@@ -599,8 +608,8 @@ class ObjectBase:
         if angle is None:
             angle = self.angle
         self.move(
-            int(velocity * math.cos(angle * (math.pi / 180)) * self.time_delta),
-            int(velocity * math.sin(angle * (math.pi / 180)) * self.time_delta)
+            velocity * math.cos(angle) * self.time_delta,
+            velocity * math.sin(angle) * self.time_delta
         )
 
     def reload_room(self, name:str=None):

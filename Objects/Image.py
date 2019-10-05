@@ -35,4 +35,4 @@ class Image(ObjectBase):
         """
         Draws this image to the screen
         """
-        self.draw_to_screen(self.image)
+        self.draw_to_screen(self.rotate_object(self.image))

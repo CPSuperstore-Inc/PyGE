@@ -21,11 +21,18 @@ class Image(DisplayBase):
         new_size = (int(self.image.get_width() * scale), int(self.image.get_height() * scale))
         self.image = pygame.transform.scale(self.image, new_size)
 
+        self.rotated = self.image
+
         # get the final size of the image
         self.w, self.h = self.image.get_size()
 
         # declare other properties
         self.screen = screen
+
+    def rotate(self, radians):
+        self.angle = radians
+        self.rotated = pygame.transform.rotate(self.image, radians)
+
 
     def draw(self, x, y):
         """
@@ -33,4 +40,4 @@ class Image(DisplayBase):
         :param x: The x position
         :param y: The y position
         """
-        self.screen.blit(self.image, (x, y))
+        self.screen.blit(self.rotated, (x, y))

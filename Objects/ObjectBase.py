@@ -263,12 +263,27 @@ class ObjectBase:
         return condition
 
     def rotate_display_method(self, radians):
+        """
+        Rotates the display method (No effect if the display method is non-rotatable
+        :param radians: The radians to set the angle of the method to
+        """
         self.display.rotate(radians)
 
     def radians(self, degress:float):
+        """
+        Converts degrees to radians
+        :param degress: the degrees
+        :return: the radians
+        """
         return degress * (math.pi / 180.0)
 
     def get_rotated(self, surf:pygame.Surface, radians:float=None):
+        """
+        Rotates the specified surface by a specified number of radians
+        :param surf: the surface
+        :param radians: the angle (default is this object's angle)
+        :return: the rotated surface
+        """
         if radians is None:
             radians = self.angle
 

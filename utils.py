@@ -276,3 +276,12 @@ def pitch_to_note(freq, a4=440):
     octave = h // 12
     n = h % 12
     return NOTE_NAMES[n] + str(octave)
+
+
+def surface_center_rotate(image, angle):
+
+    center = image.get_rect().center
+    rotated_image = pygame.transform.rotate(image, angle)
+    new_rect = rotated_image.get_rect(center = center)
+
+    return rotated_image, (new_rect.x, new_rect.y)

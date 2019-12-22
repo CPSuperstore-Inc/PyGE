@@ -214,3 +214,13 @@ class Room(ScreenBase):
 
     def attempt_quit(self):
         self.parent.attempt_quit()
+
+    def export_as_xml(self, filename:str):
+        """
+        Exports the entire project as XML which can be read by the system
+        Note that the system will only export properties set in the metadata property
+        :param filename: The filename to export as
+        """
+        return self.parent.export_as_xml(filename)
+
+

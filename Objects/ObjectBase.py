@@ -4,6 +4,8 @@ import typing
 import matplotlib.path as mpl_path
 import numpy as np
 import pygame
+import threading
+import time
 
 from PyGE.DisplayMethods.Color import Color, DisplayBase
 from PyGE.Globals.GlobalVariable import get_sys_var, new_thread, get_var, set_var
@@ -13,6 +15,8 @@ from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rec
 
 
 class ObjectBase:
+    threads = []
+
     def __init__(self, screen:pygame.Surface, args: dict, parent):
         """
         This is the object ALL objects MUST inherit from to be used in a room.
@@ -100,11 +104,32 @@ class ObjectBase:
 
     def modify_args(self, args:dict):
         """
-        This method provides you with onbe final chance to modify the arguements before they are used by the object
+        This method provides you with one final chance to modify the arguements before they are used by the object
         :param args: the current arguement dictionary. Note that items coming from XML will have the "@" sign before the key. Don't worry about this. 
         :return: the modified arguement dictionary.
         """
         return args
+
+    def do_in_time(self, delay:float, action:callable, *args, **kwargs):
+        """
+        Executes the specified action after the specified time has passed
+        Note that the delay is asynchronous, and executed in a thread
+        Note that any arguement, or keyword arguement after the action is passed into the function
+        Example: If you use self.do_in_time(1, print, "Some Text"), "Some Text" will be printed 1s after calling this 
+        :param delay: The amount of time to wait before executing the action
+        :param action: The reference to the function to execute
+        :return: 
+        """
+        def fire_func():
+            time.sleep(delay)
+            action(*args, **kwargs)
+        t = threading.Thread(target=fire_func)
+        t.setDaemon(True)
+
+        self.threads.append(t)
+
+        t.start()
+
 
     def center_width(self):
         """
@@ -802,6 +827,15 @@ class ObjectBase:
         :return: the rectangle which surrounds this object (pygame rect)
         """
         return pygame.draw.aalines(self.screen, convert_color(color), closed, points, width)
+
+    def export_as_xml(self, filename:str):
+        """
+        Exports the entire project as XML which can be read by the system
+        Note that the system will only export properties set in the metadata property
+        :param filename: The filename to export as
+        """
+        return self.parent.export_as_xml(filename)
+
 
     def parent_update(self):
         """

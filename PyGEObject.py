@@ -5,6 +5,7 @@ import xmltodict
 import json as js_to_the_o_to_the_n
 
 from PyGE.Screens.Room import Room
+from PyGE.Objects.ObjectBase import ObjectBase
 from PyGE.Errors import RoomNotDeclaredException, InvalidXMLException
 from PyGE.Globals.Objects import PREMADE_OBJECTS
 
@@ -175,3 +176,29 @@ class PyGE:
         """
         if self.room.quit_action():
             quit()
+
+    def export_as_xml(self, filename:str):
+        """
+        Exports the entire project as XML which can be read by the system
+        Note that the system will only export properties set in the metadata property
+        :param filename: The filename to export as
+        """
+        xml = "<building>\n"
+
+        for name, room in self.rooms.items():             # type: str, Room
+            xml += "\t<room name=\"{}\">\n".format(name)
+
+            for obj in room.props:                      # type: ObjectBase
+                xml += "\t\t<{} ".format(type(obj).__name__)
+
+                for key, value in obj.metadata.items():
+                    xml += "{}=\"{}\" ".format(key, value)
+
+                xml += "/>\n"
+
+            xml += "\t</room>\n"
+
+        xml += "</building>"
+
+        with open(filename, 'w') as f:
+            f.write(xml)

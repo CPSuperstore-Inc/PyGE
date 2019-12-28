@@ -110,7 +110,10 @@ class Room(ScreenBase):
                 del self.tasks[0]
         for prop in self.props.array:
             if prop.deleted:
-                self.props.array.remove(prop)
+                try:
+                    self.props.array.remove(prop)
+                except ValueError:
+                    pass
                 continue
             prop.system_update()
             prop.update(pygame.key.get_pressed())

@@ -152,7 +152,7 @@ class ObjectBase:
             time.sleep(delay)
 
             if self.deleted:
-                return 
+                return
 
             action(*args, **kwargs)
         t = threading.Thread(target=fire_func)

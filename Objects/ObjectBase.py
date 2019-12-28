@@ -899,6 +899,13 @@ class ObjectBase:
         """
         pass
 
+    def onallcreated(self):
+        """
+        Overridable event which is run once all of the objects which will be created (from the XML) have been created
+        This is run after the "oncreate" method. 
+        """
+        pass
+
     def onclick(self, button, pos):
         """
         Overridable event run each time this object is clicked (the mouse changes to the down state)

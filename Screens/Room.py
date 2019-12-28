@@ -58,6 +58,8 @@ class Room(ScreenBase):
                         raise ObjectNotDeclaredException(
                             "The Object '{0}' Is Referenced In The XML, But Is Not Declared. Please Place A Reference To The '{0}' Class In The 'custom_objects' List When Calling The 'side_scroller' Function.".format(
                                 item))
+        for p in self.props.array:      # type: ObjectBase
+            p.onallcreated()
 
     def run_func_in_sec(self, func:callable, delay:float, *args, **kwargs):
         """

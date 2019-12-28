@@ -308,6 +308,12 @@ def pyge_application(
         game.update(events)
         game.draw()
 
+        if game.mouse_cursor is not None:
+            game.mouse_cursor.draw(
+                pygame.mouse.get_pos()[0] - (game.mouse_cursor.w / 2),
+                pygame.mouse.get_pos()[1] - (game.mouse_cursor.h / 2)
+            )
+
         if auto_scale:
             main_surf.blit(pygame.transform.scale(screen, scaled_size), scaled_pos)
         else:

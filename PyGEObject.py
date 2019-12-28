@@ -8,6 +8,7 @@ from PyGE.Screens.Room import Room
 from PyGE.Objects.ObjectBase import ObjectBase
 from PyGE.Errors import RoomNotDeclaredException, InvalidXMLException
 from PyGE.Globals.Objects import PREMADE_OBJECTS
+from PyGE.DisplayMethods import DisplayBase
 
 
 pygame.init()
@@ -26,7 +27,7 @@ class PyGE:
         :param load_mode: The mode ID of the method to interpret the level data as (0=XML, 1=JSON)
         :param background_color: The background color to use (tuple only) unless a room specifies otherwise
         """
-
+        self.mouse_cursor = None            # type: DisplayBase
         self.load_mode = load_mode
         self.screen = screen
         self.level_data = level_data
@@ -103,6 +104,7 @@ class PyGE:
             self.rooms[str(room["@name"])] = Room(self.screen, room, self.custom_objects, self)
         # for sub_room in sub_rooms:
         #     self.sub_rooms[str(sub_room["@name"])] = SubRoom(self.screen, sub_room, self.custom_objects, self)
+
     def update(self, events:list):
         """
         Triggers the selected room's update event
@@ -131,6 +133,14 @@ class PyGE:
                     .format(room)
             )
         self.room.enter_room()
+
+    def set_mouse_cursor(self, method: 'DisplayBase'):
+        """
+        Sets the mouse cursor to the specified display method (can be an image, spritesheet, text, or any object which extends the PyGE.DisplayMethods.DisplayBase class)
+        :param method: the display method to set the cursor as. Use None to reset to the default cursor.
+        """
+        pygame.mouse.set_visible(method is None)
+        self.mouse_cursor = method
 
     def add_room(self, name):
         """

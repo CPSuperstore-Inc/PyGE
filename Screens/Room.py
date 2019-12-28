@@ -9,6 +9,8 @@ from PyGE.Objects.ObjectBase import ObjectBase
 from PyGE.utils import rect_a_touch_b
 from PyGE.Globals.GlobalVariable import get_sys_var
 from PyGE.Errors import ObjectNotDeclaredException
+from PyGE.DisplayMethods import DisplayBase
+
 
 HALL = 0
 
@@ -224,6 +226,13 @@ class Room(ScreenBase):
 
     def attempt_quit(self):
         self.parent.attempt_quit()
+
+    def set_mouse_cursor(self, method: 'DisplayBase'):
+        """
+        Sets the mouse cursor to the specified display method (can be an image, spritesheet, text, or any object which extends the PyGE.DisplayMethods.DisplayBase class)
+        :param method: the display method to set the cursor as. Use None to reset to the default cursor.
+        """
+        self.parent.set_mouse_cursor(method)
 
     def export_as_xml(self, filename:str):
         """

@@ -899,6 +899,13 @@ class ObjectBase:
         """
         pass
 
+    def set_mouse_cursor(self, method: 'DisplayBase'):
+        """
+        Sets the mouse cursor to the specified display method (can be an image, spritesheet, text, or any object which extends the PyGE.DisplayMethods.DisplayBase class)
+        :param method: the display method to set the cursor as. Use None to reset to the default cursor.
+        """
+        self.parent.set_mouse_cursor(method)
+
     def onallcreated(self):
         """
         Overridable event which is run once all of the objects which will be created (from the XML) have been created

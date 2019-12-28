@@ -124,6 +124,10 @@ class ObjectBase:
         def fire_func():
             while True:
                 time.sleep(delay)
+
+                if self.deleted:
+                    break
+
                 sub_t = threading.Thread(target=lambda: action(*args, **kwargs))
                 sub_t.setDaemon(True)
                 self.threads.append(sub_t)
@@ -146,6 +150,10 @@ class ObjectBase:
         """
         def fire_func():
             time.sleep(delay)
+
+            if self.deleted:
+                return 
+
             action(*args, **kwargs)
         t = threading.Thread(target=fire_func)
         t.setDaemon(True)

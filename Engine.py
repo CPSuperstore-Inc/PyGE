@@ -5,10 +5,10 @@ import typing
 
 import pygame
 import datetime
-import os
-
-if not os.path.isdir("logs"):
-    os.mkdir("logs")
+# import os
+#
+# if not os.path.isdir("logs"):
+#     os.mkdir("logs")
 
 log_filename = datetime.datetime.now().strftime('logs/%Y-%m-%d.log')
 logging.basicConfig(

@@ -8,3 +8,4 @@ from .SpriteSheet import SpriteSheet
 from .Ticker import Ticker
 from .VectorGraphic import VectorGraphic
 from .Video import Video
+from .Cycler import Cycler

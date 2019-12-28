@@ -15,8 +15,6 @@ from PyGE.utils import get_mandatory, rect_a_touch_b, get_optional, point_in_rec
 
 
 class ObjectBase:
-    threads = []
-
     def __init__(self, screen:pygame.Surface, args: dict, parent):
         """
         This is the object ALL objects MUST inherit from to be used in a room.
@@ -30,6 +28,7 @@ class ObjectBase:
         self.parent = parent
 
         self.angle = 0
+        self.threads = []
 
         # self.should_center_width = get_mandatory(args, "@x", str) == "c"
         # self.should_center_height = get_mandatory(args, "@y", str) == "c"
@@ -109,6 +108,31 @@ class ObjectBase:
         :return: the modified arguement dictionary.
         """
         return args
+
+    def do_each_time(self, delay:float, action:callable, *args, **kwargs):
+        """
+        Executes the specified action indefinatly at the specified intervals
+        Note that the delay is asynchronous, and executed in a thread
+        Note that each interval spawns a new thread where the action is executed. This WILL cause minor time shifting, and 
+        the delay may be a few hundreths of a seccond off. This may seem small, but this will stack up after many cycles
+        Note that any arguement, or keyword arguement after the action is passed into the function
+        Example: If you use self.do_in_time(1, print, "Some Text"), "Some Text" will be printed every 1s after calling this 
+        :param delay: The amount of time to wait before executing the action
+        :param action: The reference to the function to execute
+        :return: 
+        """
+        def fire_func():
+            while True:
+                time.sleep(delay)
+                sub_t = threading.Thread(target=lambda: action(*args, **kwargs))
+                sub_t.setDaemon(True)
+                self.threads.append(sub_t)
+                sub_t.start()
+
+        t = threading.Thread(target=fire_func)
+        t.setDaemon(True)
+        self.threads.append(t)
+        t.start()
 
     def do_in_time(self, delay:float, action:callable, *args, **kwargs):
         """

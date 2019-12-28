@@ -15,7 +15,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="(%(asctime)s) [%(levelname)-7.7s] %(message)s",
     handlers=[
-        logging.FileHandler(log_filename),
+        # logging.FileHandler(log_filename),
         logging.StreamHandler()
     ],
     datefmt='%Y-%m-%d %H:%M:%S'

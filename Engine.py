@@ -4,6 +4,27 @@ import time
 import typing
 
 import pygame
+import datetime
+import os
+
+if not os.path.isdir("logs"):
+    os.mkdir("logs")
+
+log_filename = datetime.datetime.now().strftime('logs/%Y-%m-%d.log')
+logging.basicConfig(
+    level=logging.INFO,
+    format="(%(asctime)s) [%(levelname)-7.7s] %(message)s",
+    handlers=[
+        logging.FileHandler(log_filename),
+        logging.StreamHandler()
+    ],
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logger = logging.getLogger()
+
+logging.info("----------------[ Application Start ]----------------")
+
+logging.info("Initializing PyGE Dependencies...")
 
 from PyGE.Globals.Cache import set_spritesheet, set_image, set_sound, set_default_image, set_default_spritesheet, \
     set_font, set_video, set_model
@@ -74,6 +95,8 @@ def pyge_application(
     """
     tmp = []
 
+    logging.info("Initializing PyGE Application...")
+
     set_sys_var("audio-anaylasis-enabled", audio_anaylasis_enabled)
 
     if custom_objects is None:
@@ -101,6 +124,8 @@ def pyge_application(
     set_var("vertical_g", -9.80665)
     set_var("lateral_g", 0)
 
+    logging.info("Calculating Screen Scaling...")
+
     for name, value in initial_variables.items():
         set_var(name, value)
 
@@ -115,13 +140,18 @@ def pyge_application(
     x_scale = game_screen_size[0] / development_screen_size[0]
     y_scale = game_screen_size[1] / development_screen_size[1]
 
+    logging.info("Calculated Scale Factors As {}, {}...".format(x_scale, y_scale))
+
     scale_factor = 1
 
     if development_screen_size[0] * y_scale <= game_screen_size[0]:
         scale_factor = y_scale
+        logging.info("Using Y-Scale Factor To Cause A Fullscreen Application...")
     elif development_screen_size[1] * x_scale <= game_screen_size[1]:
         scale_factor = x_scale
+        logging.info("Using X-Scale Factor To Cause A Fullscreen Application...")
     else:
+        logging.fatal("Could Not Calculate A Scale Factor To Match The User's Monitor")
         quit()
 
     scaled_size = (
@@ -132,26 +162,38 @@ def pyge_application(
         (game_screen_size[0] / 2) - (scaled_size[0] / 2),
         (game_screen_size[1] / 2) - (scaled_size[1] / 2)
     )
+    logging.info("The Scaled Screen Size Has Been Calculated As {}x{}".format(*scaled_size))
+    logging.info("The Scaled Position Has Been Calculated As {}x{}".format(*scaled_pos))
 
     mode = 0
-    if fullscreen: mode = pygame.FULLSCREEN
+    if fullscreen:
+        logging.info("Enabling Fullscreen Mode...")
+        mode = pygame.FULLSCREEN
+
+    logging.info("Window Interaction Mode Set To {}".format(mode))
 
     if auto_scale:
+        logging.info("Scaling The Screen Up To The Specified Size. Using A Window Size Of {}x{}".format(*game_screen_size))
         main_surf = pygame.display.set_mode(game_screen_size, mode | pygame.DOUBLEBUF)
     else:
+        logging.info("Skipping Screen Scaling. Using A Window Size Of {}x{}...".format(*development_screen_size))
         main_surf = pygame.display.set_mode(development_screen_size, mode | pygame.DOUBLEBUF)
 
+    logging.info("Building The Buffered Screen For Application Drawing")
     screen = pygame.Surface(development_screen_size)
 
     pygame.display.set_caption(caption)
 
     if loading_screen is not None:
+        logging.info("Spawning Loading Screen Thread")
         t = threading.Thread(
             target=loading_screen,
             args=(screen,)
         )
         t.setDaemon(True)
         t.start()
+    else:
+        logging.info("Skipping Loading Screen")
 
     load_start = time.time()
 
@@ -174,21 +216,41 @@ def pyge_application(
         models = {}
 
     if icon is not None:
+        logging.info("Setting Application Icon")
         pygame.display.set_icon(pygame.image.load(icon))
 
+    logging.info("Caching {} Images".format(len(images)))
+    i = 1
     for name, props in images.items():
+        logging.info("    Image {} - {} of {}".format(name, i, len(images)))
         set_image(name, props['path'], get_optional(props, "w", None), get_optional(props, "h", None))
+        i += 1
 
+    logging.info("Caching {} Sprite Sheets".format(len(sprite_sheets)))
+    i = 1
     for name, props in sprite_sheets.items():
+        logging.info("    Sprite Sheet {} - {} of {}".format(name, i, len(sprite_sheets)))
         set_spritesheet(name, props["path"], props["w"], props["h"], props["duration"], get_optional(props, "final_size", None), get_optional(props, "invisible_color", (10, 10, 10)))
+        i += 1
 
+    logging.info("Caching {} Sound Files".format(len(sounds)))
+    i = 1
     for name, props in sounds.items():
+        logging.info("    Sound File {} - {} of {}".format(name, i, len(sounds)))
         set_sound(name, props["path"], get_optional(props, "volume", 1.0, float))
+        i += 1
 
+    logging.info("Caching {} Font Files".format(len(font)))
+    i = 1
     for name, props in font.items():
+        logging.info("    Font File {} - {} of {}".format(name, i, len(font)))
         set_font(name, props["path"], props["size"], bold=get_optional(props, "bold", False, bool), italic=get_optional(props, "italic", False, bool))
+        i += 1
 
+    logging.info("Caching {} Video Files".format(len(videos)))
+    i = 1
     for name, props in videos.items():
+        logging.info("    Video File {} - {} of {}".format(name, i, len(videos)))
         set_video(
             name, props["path"],
             has_mask=get_optional(props, "has_mask", False, bool),
@@ -201,28 +263,36 @@ def pyge_application(
             verbose=get_optional(props, "verbose", False, bool),
             fps_source=get_optional(props, "fps_source", 'tbr', str)
         )
+        i += 1
 
     for name, props in models.items():
         set_model(name, path=props["path"])
 
+    logging.info("Performing General Initializations...")
     set_default_image(default_image)
     set_default_spritesheet(default_spritesheet)
 
     clock = pygame.time.Clock()
     class_ref = PyGE
+
+    logging.info("Building Application Entities")
     if alt_side_scroller is not None:
         class_ref = alt_side_scroller
     game = class_ref(screen, level_data, start_room, custom_objects, load_mode, background_color)
 
     load_duration = time.time() - load_start
+    logging.info("Application Initialization Took {}s".format(load_duration))
     if load_duration < min_loading_time:
+        logging.info("Loading Time < {}s. Waiting {}s To Compensate".format(min_loading_time, min_loading_time - load_duration))
         time.sleep(min_loading_time - load_duration)
 
     if post_load is not None:
+        logging.info("Executing Auxillary Loading Methods")
         post_load()
 
     set_var("loaded", True)
 
+    logging.info("Entering Main Application Loop!")
     i = 1
     while True:
         events = pygame.event.get()

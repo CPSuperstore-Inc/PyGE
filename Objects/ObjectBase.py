@@ -76,11 +76,11 @@ class ObjectBase:
 
         self.siblings = self.parent.props.array
 
+        self.zindex = get_optional(args, "zindex", 10, int)
+
         self.oncreate()
 
         self.frequency_monitor_thread = None
-
-        self.zindex = 10
 
     def reload_vars(self):
         self.positional_vars = {

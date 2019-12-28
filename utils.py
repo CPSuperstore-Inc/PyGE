@@ -147,6 +147,7 @@ def rect_a_in_b(rect_a: tuple, rect_b: tuple):
     # if A is fully inside b
     a_x, a_y, a_w, a_h = rect_a
     b_x, b_y, b_w, b_h = rect_b
+    
 
     points = [
         (a_x, a_y),

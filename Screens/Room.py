@@ -212,6 +212,11 @@ class Room(ScreenBase):
         self.parent.rename_room(old, new)
 
     def reload_room(self, name:str=None):
+        # delete objects. This is a way to ensure all threads have died
+        for o in self.props.array:  # type: ObjectBase
+            o.onreload()
+            o.deleted = True
+
         if name is None:
             self.load_room()
         else:

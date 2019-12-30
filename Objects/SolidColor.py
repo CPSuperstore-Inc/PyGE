@@ -9,7 +9,7 @@ class SolidColor(ObjectBase):
         ObjectBase.__init__(self, screen, args, parent)
         self.w = self.get_mandatory_arguement("w", int)
         self.h = self.get_mandatory_arguement("h", int)
-        self.color = self.get_mandatory_arguement("color", int)
+        self.color = self.get_mandatory_arguement("color")
         self.set_display_method(Color(self.screen, convert_color(self.color), self.w, self.h))
 
     @property

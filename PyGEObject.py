@@ -66,6 +66,7 @@ class PyGE:
         for name, data in map_data.items():
             w = len(data[0])
             h = len(data)
+
             y = 0
             for row in data:
                 x = 0

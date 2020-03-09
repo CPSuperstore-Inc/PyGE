@@ -81,6 +81,15 @@ class ObjectBase:
 
         self.frequency_monitor_thread = None
 
+        self.collidable = True
+
+
+    def set_collidable(self, state:bool):
+        self.collidable = state
+
+    def is_collidable(self):
+        return self.collidable
+
     def reload_vars(self):
         self.positional_vars = {
             "sw": self.screen_w,
@@ -469,7 +478,8 @@ class ObjectBase:
                     self.onscreenleave()
                 self.on_screen_cache = onscreen
             self.onmove(x, y)
-            self.collision_detecion(self.parent.props.array)
+            if self.is_collidable():
+                self.collision_detecion(self.parent.props.array)
 
         return onscreen
 
@@ -1078,3 +1088,4 @@ class ObjectBase:
         :param message: the message recieved
         """
         pass
+
